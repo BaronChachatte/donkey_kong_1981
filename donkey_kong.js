@@ -8,15 +8,16 @@ const speed = 2
 kaboom({
     global:true,
     fullscreen:true,
-    width: 800,
-    height: 600,
+    width: 600,
+    height: 800,
     background: [ 0, 0, 0, ],
     scale:1.5,
     crisp:true,
 })
 
 /*assets*/
-loadSpriteAtlas("/sprites/mario/Mario.png", {
+
+loadSpriteAtlas("sprites/mario/Mario.png", {
     "mario": {
         x: 0,
         y:0,
@@ -283,11 +284,11 @@ scene("game", () => {
         "                            ===       ",
         "                                      ",
         "                                      ",
+        "                                      ",
         "                $                     ",
         "                                      ",
         "                                      ",
-        "                $                     ",
-        "       o                              ",
+        "       o        $                     ",
         "                            $         ",
         "                                      ",
         "                                      ",
