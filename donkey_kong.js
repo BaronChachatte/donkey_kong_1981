@@ -3,17 +3,34 @@ import kaboom from "https://unpkg.com/kaboom/dist/kaboom.mjs";
 /*context*/
 
 const fall = 500
-const speed = 100
+const speed = 2
 
 kaboom({
-    width: 570,
-    height: 444,
+    global:true,
+    fullscreen:true,
+    width: 800,
+    height: 600,
     background: [ 0, 0, 0, ],
+    scale:1.5,
+    crisp:true,
 })
 
 /*assets*/
-
-loadSprite("mario", "sprites/mario/standing_mario_right.png");
+loadSpriteAtlas("/sprites/mario/Mario.png", {
+    "mario": {
+        x: 0,
+        y:0,
+        width: 588,
+        height: 100,
+        sliceX: 6,
+        anims: {
+            idle_right: {from: 0, to: 0},
+            idle_left:{from: 1, to: 1},
+            run_right: { from: 2, to: 3, loop:true, speed: 5 },
+            run_left: { from: 4, to: 5, loop:true, speed: 5 },
+        },
+    },
+})
 loadSprite("floor", "sprites/map/floor_size_1.png");
 loadSprite("floor_solid", "sprites/map/floor_solid_size_1.png");
 loadSprite("ladder", "sprites/map/ladder_size_1.png");
@@ -30,7 +47,7 @@ scene("game", () => {
         "background",
         "game",
         "ui",
-    ], "game")
+    ],  "game")
 
     /*mario*/
 
@@ -41,6 +58,8 @@ scene("game", () => {
         body(),
         scale(0.35),
     ])
+
+    mario.play("idle_right")
     
     function jump() {
         if (mario.isGrounded()) {
@@ -49,14 +68,32 @@ scene("game", () => {
     }
 
     onKeyPress("up", jump);
+    onKeyPress("space", jump);
     
-    onKeyDown("left", () => {
-        mario.move(-speed, 0);
-    });
-    
-    onKeyDown("right", () => {
-        mario.move(speed, 0);
-    });
+
+    onUpdate(() => {
+        const curAnim = mario.curAnim()
+
+        if (isKeyDown("left")) {
+            if (curAnim !=="run_left")
+            {
+                mario.play("run_left")
+            }
+            mario.pos.x -=speed
+        }
+        else if (isKeyDown("right")) {
+            if (curAnim !=="run_right")
+            {
+                mario.play("run_right")
+            }
+            mario.pos.x +=speed
+        }
+        else 
+        {
+            const direction = curAnim.split('_').pop() ?? "left"
+            mario.play(`idle_${direction}`)
+        }
+    })
 
     /*level*/
 
