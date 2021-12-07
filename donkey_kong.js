@@ -6,13 +6,13 @@ const fall = 500
 const speed = 2
 
 kaboom({
-    global:true,
-    fullscreen:true,
+    global: true,
+    fullscreen: true,
     width: 600,
-    height: 800,
-    background: [ 0, 0, 0, ],
-    scale:1.5,
-    crisp:true,
+    height: 450,
+    background: [0, 0, 0,],
+    scale: 1.5,
+    crisp: true,
 })
 
 /*assets*/
@@ -20,15 +20,15 @@ kaboom({
 loadSpriteAtlas("sprites/mario/Mario.png", {
     "mario": {
         x: 0,
-        y:0,
+        y: 0,
         width: 588,
         height: 100,
         sliceX: 6,
         anims: {
-            idle_right: {from: 0, to: 0},
-            idle_left:{from: 1, to: 1},
-            run_right: { from: 2, to: 3, loop:true, speed: 5 },
-            run_left: { from: 4, to: 5, loop:true, speed: 5 },
+            idle_right: { from: 0, to: 0 },
+            idle_left: { from: 1, to: 1 },
+            run_right: { from: 2, to: 3, loop: true, speed: 5 },
+            run_left: { from: 4, to: 5, loop: true, speed: 5 },
         },
     },
 })
@@ -48,7 +48,7 @@ scene("game", () => {
         "background",
         "game",
         "ui",
-    ],  "game")
+    ], "game")
 
     /*mario*/
 
@@ -61,39 +61,80 @@ scene("game", () => {
     ])
 
     mario.play("idle_right")
-    
+
     function jump() {
         if (mario.isGrounded()) {
             mario.jump(100);
         }
     }
 
-    onKeyPress("up", jump);
     onKeyPress("space", jump);
-    
+
+
+    /*mario animations*/
 
     onUpdate(() => {
         const curAnim = mario.curAnim()
 
         if (isKeyDown("left")) {
-            if (curAnim !=="run_left")
-            {
+            if (curAnim !== "run_left") {
                 mario.play("run_left")
             }
-            mario.pos.x -=speed
+            mario.pos.x -= speed
         }
+
         else if (isKeyDown("right")) {
-            if (curAnim !=="run_right")
-            {
+            if (curAnim !== "run_right") {
                 mario.play("run_right")
             }
-            mario.pos.x +=speed
+            mario.pos.x += speed
         }
-        else 
-        {
-            const direction = curAnim.split('_').pop() ?? "left"
-            mario.play(`idle_${direction}`)
+
+        else {
+            if (curAnim) {
+                var directionAnim = curAnim.split('_')[1];
+                mario.play('idle_' + directionAnim)
+            }
         }
+    })
+
+    /*ladders*/
+
+    var arr_ladder = [
+        [135, 342, 5],
+        [420, 410, 5],
+    ];
+
+    var height_ladder = 21 * 0.35;  /*scale*/
+
+    arr_ladder.forEach(function (each_ladder) {
+        for (var i = 0; i < each_ladder[2]; i++) {
+            add([
+                sprite("ladder"),
+                pos(each_ladder[0], each_ladder[1] - i * height_ladder),
+                area(),
+                scale(0.35),
+                'ladder'
+            ])
+        }
+    })
+
+    var getLadders = get('ladder');
+
+    mario.onUpdate(() => {
+        getLadders.forEach(function (each_ladder) {
+            if (mario.isColliding(each_ladder)) {
+                gravity(0);
+
+                if (isKeyDown("up")) {
+                    mario.pos.y -= speed;
+                }
+            }
+
+            else {
+                gravity(200);
+            }
+        })
     })
 
     /*level*/
@@ -125,7 +166,7 @@ scene("game", () => {
         "                                      ",
         "             ---                      ",
         "             ===                      ",
-        "                                      ",                               
+        "                                      ",
         "                     $                ",
         "                                      ",
         "                                      ",
@@ -255,22 +296,22 @@ scene("game", () => {
         "                 $                    ",
         "                                      ",
         "                                      ",
-        "         $       $                    ",
+        "                 $                    ",
         "                                      ",
         "                                      ",
-        "         $       $                    ",
+        "                 $                    ",
         "                                      ",
         "                                      ",
-        "         $       $                    ",
+        "                 $                    ",
         "                                      ",
         "                                      ",
-        "         $       $                    ",
+        "                 $                    ",
         "                                      ",
         "                                      ",
-        "         $       $                    ",
+        "                 $                    ",
         "                                      ",
         "                                      ",
-        "         $       $                    ",
+        "                 $                    ",
         "                                      ",
         "     --                               ",
         "     ==---       $                    ",
@@ -289,22 +330,22 @@ scene("game", () => {
         "                                      ",
         "                                      ",
         "       o        $                     ",
-        "                            $         ",
         "                                      ",
         "                                      ",
-        "                            $         ",
         "                                      ",
         "                                      ",
-        "                            $         ",
         "                                      ",
         "                                      ",
-        "                            $         ",
         "                                      ",
         "                                      ",
-        "                            $         ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
         "                $                     ",
         "                                      ",
-        "                            $         ",
+        "                                      ",
         "                $                     ",
         "                               ---    ",
         "                            ---===    ",
@@ -335,7 +376,6 @@ scene("game", () => {
             sprite("ladder"),
             area(),
             scale(0.35),
-            "ladder",
             layer("background"),
         ],
 
@@ -362,7 +402,7 @@ scene("game", () => {
         addKaboom(mario.pos);
     });
 
-    mario.action (() => {
+    mario.action(() => {
         if (mario.pos.y >= fall) {
             go("lose", score)
         }
