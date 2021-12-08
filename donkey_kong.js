@@ -33,17 +33,18 @@ loadSpriteAtlas("sprites/mario/Mario.png", {
         },
     },
 })
+
+// sprite DK
 loadSpriteAtlas("sprites/donkey_kong/DK.png", {
     "DK": {
-        pos:(0,0),
-        width: 588,
-        height: 100,
+        x: 0,
+        y: 0,
+        width: 2400,
+        height: 250,
         sliceX: 6,
         anims: {
-            idle_right: {from: 0, to: 0},
-            idle_left:{from: 1, to: 1},
-            run_right: { from: 2, to: 3, loop:true, speed: 5 },
-            run_left: { from: 4, to: 5, loop:true, speed: 5 },
+            beating: {from: 0, to: 1, loop:true,speed:5},
+            baril_drop: {from: 2, to: 5, speed:5}
         },
     },
 })
@@ -118,7 +119,18 @@ scene("game", () => {
         scale(0.35),
     ])
 
+    // DK
+    const DK = add([
+        sprite("DK"),
+        pos(100,10),
+        area(),
+        body(),
+        layer("game"),
+        scale(0.25),
+    ])
+
     mario.play("idle_right")
+    DK.play("beating")
 
     function jump() {
         if (mario.isGrounded()) {
@@ -249,7 +261,7 @@ scene("game", () => {
         "             $ $                      ",
         "                                      ",
         "                                      ",
-        "             ---                      ",
+        "                                      ",
         "             ===                      ",
         "                                      ",
         "                                      ",
@@ -469,8 +481,8 @@ scene("game", () => {
         "4": () => [
             sprite("straight_barrel_x4"),
             area(),
-            solid(),
             scale(0.35),
+            layer("background"),
         ],
     });
 
