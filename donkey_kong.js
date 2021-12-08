@@ -494,7 +494,7 @@ scene("game", () => {
             area(),
             body(),
             pos(80,40),
-            move(0,40),
+            //move(0,40),
             scale(0.35),
             "barrel",
         ]);
@@ -511,7 +511,13 @@ scene("game", () => {
         shake();
         addKaboom(mario.pos);
     });
-
+    
+    onUpdate("barrel",(barrel) => { // Destroy les barrel lorsque tombe dans le vide
+        barrel.move(100,0)
+        if (barrel.pos.y >= fall) {
+            destroy(barrel)
+        }
+    })
     mario.action(() => {
         if (mario.pos.y >= fall) {
             go("lose", score)
