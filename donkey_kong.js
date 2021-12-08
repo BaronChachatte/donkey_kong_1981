@@ -1,7 +1,6 @@
 import kaboom from "https://unpkg.com/kaboom/dist/kaboom.mjs";
 
 /*context*/
-
 const fall = 500
 const speed = 1
 const climbing_speed = 0.1
@@ -17,7 +16,6 @@ kaboom({
 })
 
 /*assets*/
-
 loadSpriteAtlas("sprites/mario/Mario.png", {
     "mario": {
         x: 0,
@@ -44,34 +42,24 @@ loadSpriteAtlas("sprites/donkey_kong/DK.png", {
         sliceX: 6,
         anims: {
             beating: {from: 0, to: 1, loop:true,speed:5},
-            baril_drop: {from: 2, to: 5, speed:5}
+            baril_drop: {from: 2, to: 5, speed:5},
         },
     },
 })
-loadSpriteAtlas("sprites/obstacles/barrel.png", {
-    "barrel": {
-        x:0,
-        y:0,
-        width:360,
-        height:90,
-        sliceX:4,
-        anims: {from:0,to:3,loop:true,speed:5}
-    }
-});
 loadSprite("floor", "sprites/map/floor_size_1.png");
 loadSprite("floor_solid", "sprites/map/floor_solid_size_1.png");
 loadSprite("ladder", "sprites/map/ladder_size_1.png");
 loadSprite("oil_drum", "sprites/map/oil_drum_1.png");
 loadSprite("straight_barrel_x4", "sprites/map/straight_barrel_x4.png");
+loadSprite("barrel", "sprites/obstacles/falling_barrel_1.png");
 loadSprite("heart", "sprites/misc/heart.png");
 loadSprite("running_princess_right_2", "sprites/princess/running_princess_right_2.png");
-loadSound("death", "Sounds/death.wav");
+loadSprite("running_mario_left_2", "sprites/mario/running_mario_left_2.png");
+loadSprite("standing_donkey_kong", "sprites/donkey_kong/standing_donkey_kong.png");
 
 /*intro*/
-
 scene("intro", () => {
-    /*play again*/
-
+    /*keybindings*/
     add([
         text("Press 'left' or 'right' to move left or right!"),
         pos(width() / 2, height() / 2 -160),
@@ -95,19 +83,17 @@ scene("intro", () => {
 
     add([
         text("Press 'Enter' to play!"),
-        pos(width() / 2, height() / 2 + 160),
+        pos(width() / 2, height() / 2 + 120),
         scale(0.40),
         origin("center"),
     ]);
 
 
     /*go to game*/
-
     onKeyPress("enter", () => go("game"));
 })
 
 /*game*/
-
 scene("game", () => {
     gravity (200);
 
@@ -118,15 +104,24 @@ scene("game", () => {
     ], "game")
 
     /*mario*/
-
     const mario = add([
         sprite("mario"),
         pos(60, 379),
         area(),
         body(),
         scale(0.32),
+        health(3),
     ])
 
+    /*mario jump*/
+    function jump() {
+        if (mario.isGrounded()) {
+            mario.jump(100);
+        }
+    }
+    
+    onKeyPress("space", jump);
+    
     // DK
     const DK = add([
         sprite("DK"),
@@ -134,37 +129,27 @@ scene("game", () => {
         layer("game"),
         scale(0.25),
     ])
-
-    mario.play("idle_right")
+    
     DK.play("beating")
-
-    function jump() {
-        if (mario.isGrounded()) {
-            mario.jump(100);
-        }
-    }
-
-    onKeyPress("space", jump);
-
+    
     /*mario animations*/
-
     onUpdate(() => {
         const curAnim = mario.curAnim()
-
+        
         if (isKeyDown("left")) {
             if (curAnim !== "run_left") {
                 mario.play("run_left")
             }
             mario.pos.x -= speed
         }
-
+        
         else if (isKeyDown("right")) {
             if (curAnim !== "run_right") {
                 mario.play("run_right")
             }
             mario.pos.x += speed
         }
-
+        
         else {
             if (curAnim) {
                 var directionAnim = curAnim.split('_')[1];
@@ -172,9 +157,10 @@ scene("game", () => {
             }
         }
     })
+    
+    mario.play("idle_right")
 
     /*princess*/
-
     const princess = add([
         sprite("running_princess_right_2"),
         pos(245, 5),
@@ -184,22 +170,21 @@ scene("game", () => {
     ])
 
     /*ladders*/
-
     var arr_ladder = [
-        [420, 401, 5],  /*first floor*/
+        [420, 401, 5],  /*rez-de-chaussee*/
 
-        [135, 335, 5],  /*2nd floor*/
+        [135, 335, 5],  /*1st floor*/
         [255, 343, 7],
 
-        [285, 277, 7],  /*3rd floor*/
+        [285, 277, 7],  /*2nd floor*/
         [420, 269, 5],
 
-        [210, 207, 6],  /*4th floor*/
+        [210, 207, 6],  /*3rd floor*/
         [135, 203, 5],
 
-        [420, 137, 5],  /*5th floor*/
+        [420, 137, 5],  /*4th floor*/
 
-        [315, 81, 5],  /*top platform*/
+        [315, 81, 5],  /*5th floor*/
     ];
 
     var height_ladder = 21 * 0.35;  /*scale*/
@@ -222,8 +207,6 @@ scene("game", () => {
     mario.onUpdate(() => {
         getLadders.forEach(function (each_ladder) {
             if (mario.isColliding(each_ladder)) {
-                gravity(0);
-
                 if (isKeyDown("up")) {
                     mario.pos.y -= climbing_speed;
                     mario.jump(100);
@@ -233,15 +216,10 @@ scene("game", () => {
                     mario.pos.y += climbing_speed;
                 }
             }
-
-            else {
-                gravity (200);
-            }
         })
     })
 
     /*level*/
-
     addLevel([
         "             $ $                      ",
         "                                      ",
@@ -462,6 +440,7 @@ scene("game", () => {
             area(),
             solid(),
             scale(0.35),
+            layer("background"),
         ],
 
         "=": () => [
@@ -494,51 +473,85 @@ scene("game", () => {
 
     /*barrels*/
 
+    /*spawn barrels*/
     function spawnBarrel() {
         add([
             sprite("barrel"),
             area(),
             body(),
             pos(190,70),
-            //move(0,40),
             scale(0.35),
-            "barrel",
+            'barrel',
         ]);
 
-        wait(rand(3, 6), spawnBarrel);
+        wait(rand(3, 6), spawnBarrel);  /*spawn randomly between 3 to 6 seconds*/
     }
 
     spawnBarrel();
 
-    /*lose conditions*/
-
-    mario.onCollide("barrel", () => {
-        go("lose", score);
-        shake();
-        play("death");
-    });
-    
-    onUpdate("barrel",(barrel) => { // Destroy les barrel lorsque tombe dans le vide
-        barrel.move(100,0)
+    /*destroy barrels if out of map*/
+    onUpdate("barrel",(barrel) => {
         if (barrel.pos.y >= fall) {
-            destroy(barrel)
+            destroy(barrel);
         }
     })
+
+    /*barrels pattern*/
+    onUpdate("barrel",(barrel) => {
+        if (barrel.pos.y < 80) {
+            barrel.move(50, 0)
+        }
+
+        else if (barrel.pos.y > 120 && barrel.pos.y < 135) {
+            barrel.move(-50, 0)
+        }
+
+        else if (barrel.pos.y > 185 && barrel.pos.y < 200) {
+            barrel.move(50, 0)
+        }
+
+        else if (barrel.pos.y > 250 && barrel.pos.y < 265) {
+            barrel.move(-50, 0)
+        }
+
+        else if (barrel.pos.y > 315 && barrel.pos.y < 340) {
+            barrel.move(50, 0)
+        }
+
+        else if (barrel.pos.y > 385) {
+            barrel.move(-50, 0)
+        }
+    })
+
+    /*lose life if mario collides with any barrel*/
+    onUpdate("barrel",(barrel) => {
+        if (barrel.isTouching(mario)) {
+            mario.hurt(1);
+            addKaboom(mario.pos);
+            destroy(barrel);
+        }
+    })
+
+    /*lose conditions*/
+
+    /*lose if mario is out of map*/
     mario.action(() => {
         if (mario.pos.y >= fall) {
             go("lose", score)
-            play("death")
         }
     })
 
-    /*win conditions*/
+    /*lose when hp reaches 0*/
+    mario.onDeath(() => {
+        go("lose", score)
+    })
 
+    /*win conditions*/
     mario.onCollide("princess", () => {
         go("win", score);
     });
 
     /*score counter*/
-
     let score = 0;
 
     const scoreLabel = add([
@@ -554,7 +567,6 @@ scene("game", () => {
 });
 
 /*lose scene*/
-
 scene("lose", (score) => {
     add([
         sprite("standing_donkey_kong"),
@@ -564,7 +576,6 @@ scene("lose", (score) => {
     ]);
 
     /*display score*/
-    
     add([
         text(score),
         pos(width() / 2, height() / 2 + 80),
@@ -573,7 +584,6 @@ scene("lose", (score) => {
     ]);
 
     /*play again*/
-
     add([
         text("Press 'Enter' to play again!"),
         pos(width() / 2, height() / 2 + 160),
@@ -582,12 +592,10 @@ scene("lose", (score) => {
     ]);
 
     /*go back to game*/
-
     onKeyPress("enter", () => go("game"));
 })
 
 /*win scene*/
-
 scene("win", (score) => {
     add([
         sprite("running_princess_right_2"),
@@ -611,7 +619,6 @@ scene("win", (score) => {
     ]);
 
     /*display score*/
-
     add([
         text(score),
         pos(width() / 2, height() / 2 + 80),
@@ -620,7 +627,6 @@ scene("win", (score) => {
     ]);
 
     /*play again*/
-
     add([
         text("Press 'Enter' to play again!"),
         pos(width() / 2, height() / 2 + 160),
@@ -629,7 +635,6 @@ scene("win", (score) => {
     ]);
 
     /*go back to game*/
-
     onKeyPress("enter", () => go("game"));
 })
 
