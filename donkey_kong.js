@@ -486,12 +486,12 @@ scene("game", () => {
 
     /*barrels*/
 
-    /*function spawnBarrel() {
+    function spawnBarrel() {
         add([
             sprite("barrel"),
             area(),
             body(),
-            pos(80,40),
+            pos(190,70),
             //move(0,40),
             scale(0.35),
             "barrel",
@@ -500,7 +500,7 @@ scene("game", () => {
         wait(rand(3, 6), spawnBarrel);
     }
 
-    spawnBarrel();*/
+    spawnBarrel();
 
     /*lose conditions*/
 
