@@ -3,8 +3,8 @@ import kaboom from "https://unpkg.com/kaboom/dist/kaboom.mjs";
 /*context*/
 
 const fall = 500
-const speed = 2
-const speedy = 0.2
+const speed = 1
+const climbing_speed = 0.1
 
 kaboom({
     global: true,
@@ -33,7 +33,7 @@ loadSpriteAtlas("sprites/mario/Mario.png", {
         },
     },
 })
-loadSpriteAtlas("/sprites/donkey_kong/DK.png", {
+loadSpriteAtlas("sprites/donkey_kong/DK.png", {
     "DK": {
         pos:(0,0),
         width: 588,
@@ -47,20 +47,17 @@ loadSpriteAtlas("/sprites/donkey_kong/DK.png", {
         },
     },
 })
-
 loadSprite("floor", "sprites/map/floor_size_1.png");
 loadSprite("floor_solid", "sprites/map/floor_solid_size_1.png");
 loadSprite("ladder", "sprites/map/ladder_size_1.png");
 loadSprite("oil_drum", "sprites/map/oil_drum_1.png");
 loadSprite("straight_barrel_x4", "sprites/map/straight_barrel_x4.png");
-loadSprite("barell", "sprites/obstacles/falling_barrel_1.png");
-
+loadSprite("barrel", "sprites/obstacles/falling_barrel_1.png");
 
 /*game*/
 
 scene("game", () => {
-
-    gravity(200);
+    gravity (200);
 
     layers([
         "background",
@@ -72,7 +69,7 @@ scene("game", () => {
 
     const mario = add([
         sprite("mario"),
-        pos(60, 400),
+        pos(60, 300),
         area(),
         body(),
         scale(0.35),
@@ -87,7 +84,6 @@ scene("game", () => {
     }
 
     onKeyPress("space", jump);
-
 
     /*mario animations*/
 
@@ -119,8 +115,20 @@ scene("game", () => {
     /*ladders*/
 
     var arr_ladder = [
-        [135, 342, 5],
-        [420, 410, 5],
+        [420, 401, 5],  /*first floor*/
+
+        [135, 335, 5],  /*2nd floor*/
+        [255, 343, 7],
+
+        [285, 277, 7],  /*3rd floor*/
+        [420, 269, 5],
+
+        [210, 207, 6],  /*4th floor*/
+        [135, 203, 5],
+
+        [420, 137, 5],  /*5th floor*/
+
+        [315, 81, 5],  /*top platform*/
     ];
 
     var height_ladder = 21 * 0.35;  /*scale*/
@@ -132,7 +140,8 @@ scene("game", () => {
                 pos(each_ladder[0], each_ladder[1] - i * height_ladder),
                 area(),
                 scale(0.35),
-                'ladder'
+                'ladder',
+                layer("background")
             ])
         }
     })
@@ -145,41 +154,21 @@ scene("game", () => {
                 gravity(0);
 
                 if (isKeyDown("up")) {
-                    mario.pos.y -= speedy;
+                    mario.pos.y -= climbing_speed;
+                    mario.jump(100);
                 }
 
-                if (isKeyDown("down")) {
-                    mario.pos.y += speedy;
+                else if (isKeyDown("down")) {
+                    mario.pos.y += climbing_speed;
                 }
             }
 
             else {
-                gravity(200);
+                gravity (200);
             }
         })
     })
-    
-    function spawnBomb() { // On crée les bombes
-        add([
-            sprite("barell"),
-            area(),
-            body(),
-            pos(80,40),
-            move(0,40),
-            scale(0.35),
-            "barell",
-        ]);
 
-        wait(rand(3, 6), spawnBomb); // on fixe délai d'apparation entre chaque bomb
-    }
-
-    spawnBomb();
-
-    /* lose condition bomb*/
-    mario.onCollide("barell", () => { 
-        go("lose", score);
-        shake();
-    });
     /*level*/
 
     addLevel([
@@ -201,7 +190,7 @@ scene("game", () => {
         "             $ $                      ",
         "                                      ",
         "                                      ",
-        "             $ $------                ",
+        "             $ $----                  ",
         "                ======                ",
         "                                      ",
         "             $ $                      ",
@@ -210,25 +199,25 @@ scene("game", () => {
         "             ---                      ",
         "             ===                      ",
         "                                      ",
-        "                     $                ",
         "                                      ",
         "                                      ",
-        "                     $                ",
         "                                      ",
         "                                      ",
-        "             $ $     $                ",
         "                                      ",
         "                                      ",
-        "             $ $     $                ",
+        "             $ $                      ",
         "                                      ",
         "                                      ",
-        "             $ $     $                ",
+        "             $ $                      ",
+        "                                      ",
+        "                                      ",
+        "             $ $                      ",
         "                                      ",
         "     --------------                   ",
         "     ==============---                ",
         "                   ===---             ",
-        "                      ===---          ",
-        "                         ===---       ",
+        "                      ===--           ",
+        "                         ===  -       ",
         "                            ===       ",
         "                                      ",
         "                                      ",
@@ -237,22 +226,21 @@ scene("game", () => {
         "                                      ",
         "                                      ",
         "                $                     ",
-        "                            $         ",
         "                                      ",
         "                                      ",
-        "                            $         ",
         "                                      ",
         "                                      ",
-        "                            $         ",
         "                                      ",
         "                                      ",
-        "                            $         ",
         "                                      ",
         "                                      ",
-        "                            $         ",
         "                                      ",
         "                                      ",
-        "                            $         ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
         "                $                     ",
         "                               --     ",
         "                            ---==     ",
@@ -260,111 +248,108 @@ scene("game", () => {
         "                      ---===          ",
         "                   ---===             ",
         "                ---===                ",
-        "             ---===                   ",
-        "          ---===                      ",
-        "       ---===                         ",
+        "                ===                   ",
+        "           --===                      ",
+        "       -  ===                         ",
         "       ===                            ",
         "                                      ",
         "                          $           ",
         "                                      ",
         "                                      ",
         "                          $           ",
-        "              $                       ",
         "                                      ",
-        "         $                            ",
-        "              $                       ",
         "                                      ",
-        "         $                            ",
-        "              $                       ",
         "                                      ",
-        "         $                            ",
-        "              $                       ",
         "                                      ",
-        "         $                            ",
-        "              $                       ",
         "                                      ",
-        "         $                            ",
-        "              $                       ",
         "                                      ",
-        "         $                $           ",
-        "              $                       ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                          $           ",
+        "                                      ",
         "     --                               ",
         "     ==---                $           ",
-        "       ===--- $                       ",
+        "       ===---                         ",
         "          ===---                      ",
-        "             ===---       $           ",
-        "                ===---                ",
+        "             ===--        $           ",
+        "                ===  -                ",
         "                   ===---             ",
-        "                      ===---          ",
-        "                         ===---       ",
+        "                      ===--           ",
+        "                         ===  -       ",
         "                            ===       ",
         "                                      ",
         "                                      ",
         "             $                        ",
         "                                      ",
-        "                   $                  ",
-        "             $                        ",
-        "                                      ",
-        "                   $        $         ",
-        "                                      ",
-        "                                      ",
-        "                   $        $         ",
-        "                                      ",
-        "                                      ",
-        "                   $        $         ",
-        "                                      ",
-        "                                      ",
-        "                   $        $         ",
-        "                                      ",
-        "                                      ",
-        "                   $        $         ",
         "                                      ",
         "             $                        ",
-        "                   $        $         ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "             $                        ",
+        "                                      ",
         "                                      ",
         "             $                 --     ",
-        "                   $        ---==     ",
+        "                            ---==     ",
         "                         ---===       ",
         "             $        ---===          ",
         "                   ---===             ",
-        "                ---===                ",
+        "                   ===                ",
         "             ---===                   ",
-        "          ---===                      ",
-        "       ---===                         ",
+        "           --===                      ",
+        "       -  ===                         ",
         "       ===                            ",
         "                                      ",
         "                                      ",
         "                                      ",
         "                                      ",
-        "                 $                    ",
         "                                      ",
         "                                      ",
-        "                 $                    ",
         "                                      ",
         "                                      ",
-        "                 $                    ",
         "                                      ",
         "                                      ",
-        "                 $                    ",
         "                                      ",
         "                                      ",
-        "                 $                    ",
         "                                      ",
         "                                      ",
-        "                 $                    ",
         "                                      ",
         "                                      ",
-        "                 $                    ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
+        "                                      ",
         "                                      ",
         "     --                               ",
-        "     ==---       $                    ",
+        "     ==---                            ",
         "       ===---                         ",
         "          ===---                      ",
         "             ===---                   ",
         "                ===---                ",
         "                   ===---             ",
-        "                      ===---          ",
-        "                         ===---       ",
+        "                      ===--           ",
+        "                         ===  -       ",
         "                            ===       ",
         "                                      ",
         "                                      ",
@@ -386,7 +371,6 @@ scene("game", () => {
         "                                      ",
         "                                      ",
         "                                      ",
-        "                $                     ",
         "                                      ",
         "                                      ",
         "                $                     ",
@@ -436,6 +420,24 @@ scene("game", () => {
             scale(0.35),
         ],
     });
+
+    /*barrels*/
+
+    function spawnBarrel() {
+        add([
+            sprite("barrel"),
+            area(),
+            body(),
+            pos(80,40),
+            move(0,40),
+            scale(0.35),
+            "barrel",
+        ]);
+
+        wait(rand(3, 6), spawnBarrel);
+    }
+
+    spawnBarrel();
 
     /*lose conditions*/
 
