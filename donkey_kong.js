@@ -58,6 +58,45 @@ loadSprite("running_princess_right_2", "sprites/princess/running_princess_right_
 loadSprite("running_mario_left_2", "sprites/mario/running_mario_left_2.png");
 loadSprite("standing_donkey_kong", "sprites/donkey_kong/standing_donkey_kong.png");
 
+/*intro*/
+
+scene("intro", () => {
+    /*play again*/
+
+    add([
+        text("Press 'left' or 'right' to move left or right!"),
+        pos(width() / 2, height() / 2 -160),
+        scale(0.25),
+        origin("center"),
+    ]);
+
+    add([
+        text("Press 'space' to jump!"),
+        pos(width() / 2, height() / 2 -80),
+        scale(0.25),
+        origin("center"),
+    ]);
+
+    add([
+        text("Press 'up' or 'down'to climb or climb down ladders!"),
+        pos(width() / 2, height() / 2),
+        scale(0.25),
+        origin("center"),
+    ]);
+
+    add([
+        text("Press 'Enter' to play!"),
+        pos(width() / 2, height() / 2 + 160),
+        scale(0.40),
+        origin("center"),
+    ]);
+
+
+    /*go to game*/
+
+    onKeyPress("enter", () => go("game"));
+})
+
 /*game*/
 
 scene("game", () => {
@@ -569,4 +608,4 @@ scene("win", (score) => {
     onKeyPress("enter", () => go("game"));
 })
 
-go("game")
+go("intro")
