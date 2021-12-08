@@ -58,6 +58,7 @@ loadSprite("heart", "sprites/misc/heart.png");
 loadSprite("running_princess_right_2", "sprites/princess/running_princess_right_2.png");
 loadSprite("running_mario_left_2", "sprites/mario/running_mario_left_2.png");
 loadSprite("standing_donkey_kong", "sprites/donkey_kong/standing_donkey_kong.png");
+loadSound("death", "Sounds/death.wav");
 
 /*intro*/
 
@@ -507,6 +508,7 @@ scene("game", () => {
     mario.onCollide("barrel", () => {
         go("lose", score);
         shake();
+        play("death");
     });
     
     onUpdate("barrel",(barrel) => { // Destroy les barrel lorsque tombe dans le vide
@@ -518,6 +520,7 @@ scene("game", () => {
     mario.action(() => {
         if (mario.pos.y >= fall) {
             go("lose", score)
+            play("death")
         }
     })
 
