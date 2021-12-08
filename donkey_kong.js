@@ -53,6 +53,10 @@ loadSprite("ladder", "sprites/map/ladder_size_1.png");
 loadSprite("oil_drum", "sprites/map/oil_drum_1.png");
 loadSprite("straight_barrel_x4", "sprites/map/straight_barrel_x4.png");
 loadSprite("barrel", "sprites/obstacles/falling_barrel_1.png");
+loadSprite("heart", "sprites/misc/heart.png");
+loadSprite("running_princess_right_2", "sprites/princess/running_princess_right_2.png");
+loadSprite("running_mario_left_2", "sprites/mario/running_mario_left_2.png");
+loadSprite("standing_donkey_kong", "sprites/donkey_kong/standing_donkey_kong.png");
 
 /*game*/
 
@@ -69,7 +73,7 @@ scene("game", () => {
 
     const mario = add([
         sprite("mario"),
-        pos(60, 300),
+        pos(60, 379),
         area(),
         body(),
         scale(0.35),
@@ -111,6 +115,16 @@ scene("game", () => {
             }
         }
     })
+
+    /*princess*/
+
+    const princess = add([
+        sprite("running_princess_right_2"),
+        pos(245, 5),
+        area(),
+        scale(0.35),
+        "princess"
+    ])
 
     /*ladders*/
 
@@ -423,7 +437,7 @@ scene("game", () => {
 
     /*barrels*/
 
-    function spawnBarrel() {
+    /*function spawnBarrel() {
         add([
             sprite("barrel"),
             area(),
@@ -437,7 +451,7 @@ scene("game", () => {
         wait(rand(3, 6), spawnBarrel);
     }
 
-    spawnBarrel();
+    spawnBarrel();*/
 
     /*lose conditions*/
 
@@ -452,6 +466,12 @@ scene("game", () => {
             go("lose", score)
         }
     })
+
+    /*win conditions*/
+
+    mario.onCollide("princess", () => {
+        go("win", score);
+    });
 
     /*score counter*/
 
@@ -472,20 +492,75 @@ scene("game", () => {
 /*lose scene*/
 
 scene("lose", (score) => {
+    add([
+        sprite("standing_donkey_kong"),
+        pos(width() / 2, height() / 2 - 80),
+        scale(0.5),
+        origin("center"),
+    ]);
 
     /*display score*/
+    
+    add([
+        text(score),
+        pos(width() / 2, height() / 2 + 80),
+        scale(1.5),
+        origin("center"),
+    ]);
+
+    /*play again*/
 
     add([
         text("Press 'Enter' to play again!"),
-        pos(width() / 2, height() / 2 + 80),
+        pos(width() / 2, height() / 2 + 160),
         scale(0.40),
         origin("center"),
     ]);
 
+    /*go back to game*/
+
+    onKeyPress("enter", () => go("game"));
+})
+
+/*win scene*/
+
+scene("win", (score) => {
+    add([
+        sprite("running_princess_right_2"),
+        pos(width() / 2 - 160, height() / 2 - 80),
+        scale(1),
+        origin("center"),
+    ]);
+
+    add([
+        sprite("heart"),
+        pos(width() / 2, height() / 2 - 80),
+        scale(1),
+        origin("center"),
+    ]);
+
+    add([
+        sprite("running_mario_left_2"),
+        pos(width() / 2 + 160, height() / 2 - 80),
+        scale(1),
+        origin("center"),
+    ]);
+
+    /*display score*/
+
     add([
         text(score),
-        pos(width() / 2, height() / 2 - 80),
+        pos(width() / 2, height() / 2 + 80),
         scale(1.5),
+        origin("center"),
+    ]);
+
+    /*play again*/
+
+    add([
+        text("Press 'Enter' to play again!"),
+        pos(width() / 2, height() / 2 + 160),
+        scale(0.40),
         origin("center"),
     ]);
 
