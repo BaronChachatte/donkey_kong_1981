@@ -48,16 +48,23 @@ loadSpriteAtlas("sprites/donkey_kong/DK.png", {
         },
     },
 })
+loadSpriteAtlas("sprites/obstacles/barrel.png", {
+    "barrel": {
+        x:0,
+        y:0,
+        width:360,
+        height:90,
+        sliceX:4,
+        anims: {from:0,to:3,loop:true,speed:5}
+    }
+});
 loadSprite("floor", "sprites/map/floor_size_1.png");
 loadSprite("floor_solid", "sprites/map/floor_solid_size_1.png");
 loadSprite("ladder", "sprites/map/ladder_size_1.png");
 loadSprite("oil_drum", "sprites/map/oil_drum_1.png");
 loadSprite("straight_barrel_x4", "sprites/map/straight_barrel_x4.png");
-loadSprite("barrel", "sprites/obstacles/falling_barrel_1.png");
 loadSprite("heart", "sprites/misc/heart.png");
 loadSprite("running_princess_right_2", "sprites/princess/running_princess_right_2.png");
-loadSprite("running_mario_left_2", "sprites/mario/running_mario_left_2.png");
-loadSprite("standing_donkey_kong", "sprites/donkey_kong/standing_donkey_kong.png");
 loadSound("death", "Sounds/death.wav");
 
 /*intro*/
