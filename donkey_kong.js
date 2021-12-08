@@ -45,16 +45,6 @@ loadSpriteAtlas("sprites/donkey_kong/DK.png", {
         },
     },
 })
-loadSpriteAtlas("sprites/obstacles/barrel.png", {
-    "barrel": {
-        x:0,
-        y:0,
-        width:360,
-        height:90,
-        sliceX:4,
-        anims: {from:0,to:3,loop:true,speed:5}
-    }
-});
 loadSprite("floor", "sprites/map/floor_size_1.png");
 loadSprite("floor_solid", "sprites/map/floor_solid_size_1.png");
 loadSprite("ladder", "sprites/map/ladder_size_1.png");
@@ -532,12 +522,17 @@ scene("game", () => {
         }
     })
 
-    /*lose life if mario collides with any barrel*/
+    /*if mario collides with any barrel*/
     onUpdate("barrel",(barrel) => {
         if (barrel.isTouching(mario)) {
+            /*lose life*/
             mario.hurt(1);
             addKaboom(mario.pos);
             destroy(barrel);
+
+            /*remove hp*/
+            hp.value -= 1
+            hp.text = "HP:" + hp.value
         }
     })
 
@@ -565,14 +560,22 @@ scene("game", () => {
 
     const scoreLabel = add([
         text(score),
-        pos(445, 25),
-        scale(0.5),
+        pos(445, 35),
+        scale(0.25),
     ]);
 
     onUpdate(() => {
         score++;
         scoreLabel.text = score;
     });
+
+    /*hp counter*/
+    const hp = add([
+        text("HP: 3"),
+        pos(445, 15),
+        { value: 3 },
+        scale(0.25),
+    ])
 });
 
 /*lose scene*/
