@@ -122,9 +122,7 @@ scene("game", () => {
     // DK
     const DK = add([
         sprite("DK"),
-        pos(100,10),
-        area(),
-        body(),
+        pos(100,22),
         layer("game"),
         scale(0.25),
     ])
