@@ -507,7 +507,6 @@ scene("game", () => {
     mario.onCollide("barrel", () => {
         go("lose", score);
         shake();
-        addKaboom(mario.pos);
     });
     
     onUpdate("barrel",(barrel) => { // Destroy les barrel lorsque tombe dans le vide
