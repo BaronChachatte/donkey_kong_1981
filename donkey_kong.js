@@ -2,8 +2,8 @@ import kaboom from "https://unpkg.com/kaboom/dist/kaboom.mjs";
 
 /*context*/
 const fall = 500
-const speed = 1
-const climbing_speed = 0.1
+const speed = 1.7
+const climbing_speed = 0.001
 
 kaboom({
     global: true,
@@ -45,12 +45,21 @@ loadSpriteAtlas("sprites/donkey_kong/DK.png", {
         },
     },
 })
+loadSpriteAtlas("sprites/obstacles/barrel.png", {
+    "barrel": {
+        x:0,
+        y:0,
+        width:360,
+        height:90,
+        sliceX:4,
+        anims: {from:0,to:3,loop:true,speed:5}
+    }
+});
 loadSprite("floor", "sprites/map/floor_size_1.png");
 loadSprite("floor_solid", "sprites/map/floor_solid_size_1.png");
 loadSprite("ladder", "sprites/map/ladder_size_1.png");
 loadSprite("oil_drum", "sprites/map/oil_drum_1.png");
 loadSprite("straight_barrel_x4", "sprites/map/straight_barrel_x4.png");
-loadSprite("barrel", "sprites/obstacles/falling_barrel_1.png");
 loadSprite("heart", "sprites/misc/heart.png");
 loadSprite("running_princess_right_2", "sprites/princess/running_princess_right_2.png");
 loadSprite("running_mario_left_2", "sprites/mario/running_mario_left_2.png");
@@ -94,7 +103,7 @@ scene("intro", () => {
 
 /*game*/
 scene("game", () => {
-    gravity (200);
+    gravity (250);
 
     layers([
         "background",
@@ -114,8 +123,9 @@ scene("game", () => {
 
     /*mario jump*/
     function jump() {
-        if (mario.isGrounded()) {
-            mario.jump(100);
+        if (mario.isGrounded()) 
+        {
+            mario.jump(120);
         }
     }
     
@@ -479,7 +489,7 @@ scene("game", () => {
             area(),
             body(),
             pos(190,70),
-            scale(0.35),
+            scale(0.2),
             'barrel',
         ]);
 
@@ -497,42 +507,37 @@ scene("game", () => {
 
     /*barrels pattern*/
     onUpdate("barrel",(barrel) => {
-        if (barrel.pos.y < 80) {
-            barrel.move(50, 0)
+        if (barrel.isGrounded && barrel.pos.y < 80 ) {
+            barrel.move(60, 0)
         }
 
-        else if (barrel.pos.y > 120 && barrel.pos.y < 135) {
-            barrel.move(-50, 0)
+        else if (barrel.isGrounded && barrel.pos.y < 135) {
+            barrel.move(-60, 0)
         }
 
-        else if (barrel.pos.y > 185 && barrel.pos.y < 200) {
-            barrel.move(50, 0)
+        else if (barrel.isGrounded && barrel.pos.y < 200) {
+            barrel.move(60, 0)
         }
 
-        else if (barrel.pos.y > 250 && barrel.pos.y < 265) {
-            barrel.move(-50, 0)
+        else if (barrel.isGrounded && barrel.pos.y < 265) {
+            barrel.move(-60, 0)
         }
 
-        else if (barrel.pos.y > 315 && barrel.pos.y < 340) {
-            barrel.move(50, 0)
+        else if (barrel.isGrounded && barrel.pos.y < 340) {
+            barrel.move(60, 0)
         }
 
-        else if (barrel.pos.y > 385) {
-            barrel.move(-50, 0)
+        else{
+            barrel.move(-60, 0)
         }
     })
 
-    /*if mario collides with any barrel*/
+    /*lose life if mario collides with any barrel*/
     onUpdate("barrel",(barrel) => {
         if (barrel.isTouching(mario)) {
-            /*lose life*/
             mario.hurt(1);
             addKaboom(mario.pos);
             destroy(barrel);
-
-            /*remove hp*/
-            hp.value -= 1
-            hp.text = "HP:" + hp.value
         }
     })
 
@@ -560,22 +565,14 @@ scene("game", () => {
 
     const scoreLabel = add([
         text(score),
-        pos(445, 35),
-        scale(0.25),
+        pos(445, 25),
+        scale(0.5),
     ]);
 
     onUpdate(() => {
         score++;
         scoreLabel.text = score;
     });
-
-    /*hp counter*/
-    const hp = add([
-        text("HP: 3"),
-        pos(445, 15),
-        { value: 3 },
-        scale(0.25),
-    ])
 });
 
 /*lose scene*/
@@ -650,4 +647,4 @@ scene("win", (score) => {
     onKeyPress("enter", () => go("game"));
 })
 
-go("intro")
+go("game")
