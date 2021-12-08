@@ -116,7 +116,7 @@ scene("game", () => {
         pos(60, 379),
         area(),
         body(),
-        scale(0.35),
+        scale(0.32),
     ])
 
     // DK
