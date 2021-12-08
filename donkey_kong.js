@@ -45,6 +45,16 @@ loadSpriteAtlas("sprites/donkey_kong/DK.png", {
         },
     },
 })
+loadSpriteAtlas("sprites/obstacles/barrel.png", {
+    "barrel": {
+        x:0,
+        y:0,
+        width:360,
+        height:90,
+        sliceX:4,
+        anims: {from:0,to:3,loop:true,speed:5}
+    }
+});
 loadSprite("floor", "sprites/map/floor_size_1.png");
 loadSprite("floor_solid", "sprites/map/floor_solid_size_1.png");
 loadSprite("ladder", "sprites/map/ladder_size_1.png");
