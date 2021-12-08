@@ -31,7 +31,6 @@ loadSpriteAtlas("sprites/mario/Mario.png", {
         },
     },
 })
-
 // sprite DK
 loadSpriteAtlas("sprites/donkey_kong/DK.png", {
     "DK": {
