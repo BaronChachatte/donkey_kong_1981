@@ -53,6 +53,8 @@ loadSprite("floor_solid", "sprites/map/floor_solid_size_1.png");
 loadSprite("ladder", "sprites/map/ladder_size_1.png");
 loadSprite("oil_drum", "sprites/map/oil_drum_1.png");
 loadSprite("straight_barrel_x4", "sprites/map/straight_barrel_x4.png");
+loadSprite("barell", "sprites/obstacles/falling_barrel_1.png");
+
 
 /*game*/
 
@@ -156,7 +158,28 @@ scene("game", () => {
             }
         })
     })
+    
+    function spawnBomb() { // On crée les bombes
+        add([
+            sprite("barell"),
+            area(),
+            body(),
+            pos(80,40),
+            move(0,40),
+            scale(0.35),
+            "barell",
+        ]);
 
+        wait(rand(3, 6), spawnBomb); // on fixe délai d'apparation entre chaque bomb
+    }
+
+    spawnBomb();
+
+    /* lose condition bomb*/
+    mario.onCollide("barell", () => { 
+        go("lose", score);
+        shake();
+    });
     /*level*/
 
     addLevel([
