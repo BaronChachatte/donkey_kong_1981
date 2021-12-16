@@ -2,7 +2,7 @@ import kaboom from "https://unpkg.com/kaboom/dist/kaboom.mjs";
 
 /*context*/
 const fall = 500
-const speed = 1
+const speed = 1.7
 const climbing_speed = 0.1
 
 kaboom({
@@ -52,8 +52,10 @@ loadSpriteAtlas("sprites/obstacles/barrel.png", {
         width: 360,
         height: 90,
         sliceX: 4,
-        anims: { from: 0, to: 3, loop: true, speed: 5 }
-    }
+        anims: { 
+            rolling: {from: 0, to: 3, loop: true, speed: 8 },
+        },
+    },
 });
 loadSprite("floor", "sprites/map/floor_size_1.png");
 loadSprite("floor_solid", "sprites/map/floor_solid_size_1.png");
@@ -78,9 +80,22 @@ loadSound("walk","Sounds/walking.wav");
 loadSound("win1","Sounds/win1.wav");
 loadSound("win2","Sounds/win2.wav")
 
+var wmusic = play("walk", {
+    volume:.3,
+    loop: false,
+})
+var imusic = play("intro", {
+    volume:.3,
+    loop: true
+})
+var bgmusic= play("backmusic", {
+    volume: .3,
+    loop: true
+})
+
+
 /*intro*/
 scene("intro", () => {
-    
     imusic.play()
     bgmusic.pause()
     onKeyPress("enter", () => {
@@ -122,9 +137,10 @@ scene("intro", () => {
 
 /*game*/
 scene("game", () => {
-    
+
+    imusic.pause()
     bgmusic.play()
-    
+
     gravity(250);
 
     /* game layers */
@@ -174,7 +190,6 @@ scene("game", () => {
         if (isKeyDown("left")) {
             if (curAnim !== "run_left") {
                 mario.play("run_left")
-             
             }
             mario.pos.x -= speed
         }
@@ -182,7 +197,6 @@ scene("game", () => {
         else if (isKeyDown("right")) {
             if (curAnim !== "run_right") {
                 mario.play("run_right")
-                
             }
             mario.pos.x += speed
         }
@@ -523,7 +537,7 @@ scene("game", () => {
 
     /* floor appear/disappear when climbing */
     onUpdate("top_ladder", (top_ladder) => {
-        top_ladder.solid = top_ladder.pos.dist(mario.pos) >= 45
+        top_ladder.solid = top_ladder.pos.dist(mario.pos) >= 35
     })
 
     /*barrels*/
@@ -531,7 +545,7 @@ scene("game", () => {
     /*spawn barrels*/
     function spawnBarrel() {
         add([
-            sprite("barrel"),
+            sprite("barrel", {anim: "rolling",}),
             area(),
             body(),
             pos(190, 70),
@@ -550,35 +564,31 @@ scene("game", () => {
             destroy(barrel);
         }
     })
-    onCollide("oil_drum","barrel", (barrel) => {
-        addExplosion()
-        destroy(barrel)
-    })
 
     /*barrels pattern*/
     onUpdate("barrel", (barrel) => {
-        if (barrel.pos.y < 80) {
-            barrel.move(60, 0)
+        if (barrel.pos.y < 76) {
+            barrel.move(90, 0)
         }
 
         else if (barrel.pos.y > 120 && barrel.pos.y < 145) {
-            barrel.move(-60, 0)
+            barrel.move(-90, 0)
         }
 
         else if (barrel.pos.y > 185 && barrel.pos.y < 210) {
-            barrel.move(60, 0)
+            barrel.move(90, 0)
         }
 
         else if (barrel.pos.y > 250 && barrel.pos.y < 275) {
-            barrel.move(-60, 0)
+            barrel.move(-90, 0)
         }
 
         else if (barrel.pos.y > 315 && barrel.pos.y < 340) {
-            barrel.move(60, 0)
+            barrel.move(90, 0)
         }
 
         else if (barrel.pos.y > 385) {
-            barrel.move(-60, 0)
+            barrel.move(-90, 0)
         }
     })
 
@@ -604,18 +614,18 @@ scene("game", () => {
             play("death", {
                 volume:0.3
             }),
-            bgmusic.pause()    
+            bgmusic.pause()  
             go("lose", score)
         }
     })
 
     /*lose when hp reaches 0*/
     mario.onDeath(() => {
+        go("lose", score)
         play("death", {
             volume:0.3
         }),
-        bgmusic.pause()
-        go("lose", score)
+        bgmusic.pause()  
     })
 
     /*win conditions*/
@@ -631,22 +641,42 @@ scene("game", () => {
     let score = 0;
 
     const scoreLabel = add([
-        text(score),
+        text(0),
         pos(445, 35),
+        {value: 0},
         scale(0.25),
     ]);
 
-    /* score refresh every frame */
+    // incrémentation du score lors d'un saut 
+    // onUpdate("barrel",(barrel) => {
+    //     if (barrel.pos.dist(mario.pos) <= 40 )
+    //     {
+    //         scoreLabel.value+=50;
+    //         scoreLabel.text = scoreLabel.value;
+    //         score+=50;
+    //     }
+    // })
+
+    // const timer = add([
+    //     text("TIMER: 1500"),
+    //     pos(445, 0),
+    //     { value: 1500 },
+    //     scale(0.25),
+    // ])
     // onUpdate(() => {
-    //     score++;
-    //     scoreLabel.text = score;
+    //     timer.value--;
+    //     if (timer.value <= 0){
+    //         go("lose")
+    //     }
+    //     timer.text = "TIMER:" + timer.value
     // });
+
 
     /*hp counter*/
     const hp = add([
         text("HP: 3"),
-        pos(445, 15),
-        { value: 3 },
+        pos(445, 18),
+        {value: 3},
         scale(0.25),
     ])
 });
@@ -723,18 +753,4 @@ scene("win", (score) => {
     onKeyPress("enter", () => go("intro"));
 })
 
-var wmusic = play("walk", {
-    volume:.3,
-    loop: false,
-})
-var imusic = play("intro", {
-    volume:.3,
-    loop: true
-})
-var bgmusic= play("backmusic", {
-    volume: .3,
-    loop: true
-})
-
-/*go ("intro") */
 go("game")
