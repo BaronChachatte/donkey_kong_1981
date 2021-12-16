@@ -180,20 +180,20 @@ scene("game", () => {
 
     /*ladders*/
     var arr_ladder = [
-        [420, 401, 5],  /*rez-de-chaussee*/
+        [420, 401, 5, [100, 50]],  /*rez-de-chaussee*/
 
-        [135, 335, 5],  /*1st floor*/
-        [255, 343, 7],
+        [135, 335, 5, [100, 50]],  /*1st floor*/
+        [255, 343, 7, [100, 50]],
 
-        [285, 277, 7],  /*2nd floor*/
-        [420, 269, 5],
+        [285, 277, 7, [100, 50]],  /*2nd floor*/
+        [420, 269, 5, [100, 50]],
 
-        [210, 207, 6],  /*3rd floor*/
-        [135, 203, 5],
+        [210, 207, 6, [100, 50]],  /*3rd floor*/
+        [135, 203, 5, [100, 50]],
 
-        [420, 137, 5],  /*4th floor*/
+        [420, 137, 5, [100, 50]],  /*4th floor*/
 
-        [315, 81, 5],  /*5th floor*/
+        [315, 81, 5, [100, 50]],  /*5th floor*/
     ];
 
     var height_ladder = 21 * 0.35;  /*scale*/
@@ -206,7 +206,10 @@ scene("game", () => {
                 area(),
                 scale(0.35),
                 'ladder',
-                layer("background")
+                layer("background"),
+                {
+                    top_ladder: each_ladder[3]
+                }
             ])
         }
     })
@@ -224,6 +227,8 @@ scene("game", () => {
                 else if (isKeyDown("down")) {
                     mario.pos.y += climbing_speed;
                 }
+
+                console.log(each_ladder)
             }
         })
     })
@@ -496,7 +501,7 @@ scene("game", () => {
         wait(rand(3, 6), spawnBarrel);  /*spawn randomly between 3 to 6 seconds*/
     }
 
-    spawnBarrel();
+    // spawnBarrel();
 
     /*destroy barrels if out of map*/
     onUpdate("barrel",(barrel) => {
@@ -507,37 +512,42 @@ scene("game", () => {
 
     /*barrels pattern*/
     onUpdate("barrel",(barrel) => {
-        if (barrel.isGrounded && barrel.pos.y < 80 ) {
-            barrel.move(60, 0)
+        if (barrel.pos.y < 80) {
+            barrel.move(50, 0)
         }
 
-        else if (barrel.isGrounded && barrel.pos.y < 135) {
-            barrel.move(-60, 0)
+        else if (barrel.pos.y > 120 && barrel.pos.y < 135) {
+            barrel.move(-50, 0)
         }
 
-        else if (barrel.isGrounded && barrel.pos.y < 200) {
-            barrel.move(60, 0)
+        else if (barrel.pos.y > 190 && barrel.pos.y < 200) {
+            barrel.move(50, 0)
         }
 
-        else if (barrel.isGrounded && barrel.pos.y < 265) {
-            barrel.move(-60, 0)
+        else if (barrel.pos.y > 255 && barrel.pos.y < 265) {
+            barrel.move(-50, 0)
         }
 
-        else if (barrel.isGrounded && barrel.pos.y < 340) {
-            barrel.move(60, 0)
+        else if (barrel.pos.y > 320 && barrel.pos.y < 340) {
+            barrel.move(50, 0)
         }
 
-        else{
-            barrel.move(-60, 0)
+        else if (barrel.pos.y > 385) {
+            barrel.move(-50, 0)
         }
     })
 
     /*lose life if mario collides with any barrel*/
     onUpdate("barrel",(barrel) => {
         if (barrel.isTouching(mario)) {
+            /*lose life*/
             mario.hurt(1);
             addKaboom(mario.pos);
             destroy(barrel);
+
+            /*remove hp*/
+            hp.value -= 1
+            hp.text = "HP:" + hp.value
         }
     })
 
@@ -565,14 +575,22 @@ scene("game", () => {
 
     const scoreLabel = add([
         text(score),
-        pos(445, 25),
-        scale(0.5),
+        pos(445, 35),
+        scale(0.25),
     ]);
 
     onUpdate(() => {
         score++;
         scoreLabel.text = score;
     });
+
+    /*hp counter*/
+    const hp = add([
+        text("HP: 3"),
+        pos(445, 15),
+        { value: 3 },
+        scale(0.25),
+    ])
 });
 
 /*lose scene*/
@@ -601,7 +619,7 @@ scene("lose", (score) => {
     ]);
 
     /*go back to game*/
-    onKeyPress("enter", () => go("game"));
+    onKeyPress("enter", () => go("intro"));
 })
 
 /*win scene*/
@@ -644,7 +662,7 @@ scene("win", (score) => {
     ]);
 
     /*go back to game*/
-    onKeyPress("enter", () => go("game"));
+    onKeyPress("enter", () => go("intro"));
 })
 
-go("game")
+go("intro")
