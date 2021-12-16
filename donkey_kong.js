@@ -65,8 +65,27 @@ loadSprite("running_princess_right_2", "sprites/princess/running_princess_right_
 loadSprite("running_mario_left_2", "sprites/mario/running_mario_left_2.png");
 loadSprite("standing_donkey_kong", "sprites/donkey_kong/standing_donkey_kong.png");
 
+/* sons */
+
+loadSound("intro","Sounds/intro1.wav");
+loadSound("longintro","Sounds/intro1_long.wav");
+loadSound("backmusic","Sounds/bacmusic.wav");
+loadSound("death", "Sounds/death.wav");
+loadSound("hammer","Sounds/hammer.wav");
+loadSound("item","Sounds/itemget.wav");
+loadSound("jump","Sounds/jump.wav");
+loadSound("walk","Sounds/walking.wav");
+loadSound("win1","Sounds/win1.wav");
+loadSound("win2","Sounds/win2.wav")
+
 /*intro*/
 scene("intro", () => {
+    
+    imusic.play()
+    bgmusic.pause()
+    onKeyPress("enter", () => {
+        imusic.pause()
+    }),
     /*keybindings*/
     add([
         text("Press 'left' or 'right' to move left or right!"),
@@ -103,6 +122,9 @@ scene("intro", () => {
 
 /*game*/
 scene("game", () => {
+    
+    bgmusic.play()
+    
     gravity(250);
 
     /* game layers */
@@ -127,6 +149,9 @@ scene("game", () => {
     function jump() {
         if (mario.isGrounded()) {
             mario.jump(120);
+            play("jump", {
+                volume:0.2,
+            });
         }
     }
 
@@ -149,6 +174,7 @@ scene("game", () => {
         if (isKeyDown("left")) {
             if (curAnim !== "run_left") {
                 mario.play("run_left")
+             
             }
             mario.pos.x -= speed
         }
@@ -156,6 +182,7 @@ scene("game", () => {
         else if (isKeyDown("right")) {
             if (curAnim !== "run_right") {
                 mario.play("run_right")
+                
             }
             mario.pos.x += speed
         }
@@ -523,6 +550,10 @@ scene("game", () => {
             destroy(barrel);
         }
     })
+    onCollide("oil_drum","barrel", (barrel) => {
+        addExplosion()
+        destroy(barrel)
+    })
 
     /*barrels pattern*/
     onUpdate("barrel", (barrel) => {
@@ -570,17 +601,29 @@ scene("game", () => {
     /*lose if mario is out of map*/
     mario.action(() => {
         if (mario.pos.y >= fall) {
+            play("death", {
+                volume:0.3
+            }),
+            bgmusic.pause()    
             go("lose", score)
         }
     })
 
     /*lose when hp reaches 0*/
     mario.onDeath(() => {
+        play("death", {
+            volume:0.3
+        }),
+        bgmusic.pause()
         go("lose", score)
     })
 
     /*win conditions*/
     mario.onCollide("princess", () => {
+        bgmusic.pause()
+        play("win2", {
+            volume:0.3
+        }),
         go("win", score);
     });
 
@@ -678,6 +721,19 @@ scene("win", (score) => {
 
     /*go back to game*/
     onKeyPress("enter", () => go("intro"));
+})
+
+var wmusic = play("walk", {
+    volume:.3,
+    loop: false,
+})
+var imusic = play("intro", {
+    volume:.3,
+    loop: true
+})
+var bgmusic= play("backmusic", {
+    volume: .3,
+    loop: true
 })
 
 go("game")
