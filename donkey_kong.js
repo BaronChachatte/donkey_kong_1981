@@ -40,17 +40,26 @@ loadSpriteAtlas("sprites/donkey_kong/DK.png", {
         height: 250,
         sliceX: 6,
         anims: {
-            beating: {from: 0, to: 1, loop:true,speed:5},
-            baril_drop: {from: 2, to: 5, speed:5},
+            beating: { from: 0, to: 1, loop: true, speed: 5 },
+            baril_drop: { from: 2, to: 5, speed: 5 },
         },
     },
 })
+loadSpriteAtlas("sprites/obstacles/barrel.png", {
+    "barrel": {
+        x: 0,
+        y: 0,
+        width: 360,
+        height: 90,
+        sliceX: 4,
+        anims: { from: 0, to: 3, loop: true, speed: 5 }
+    }
+});
 loadSprite("floor", "sprites/map/floor_size_1.png");
 loadSprite("floor_solid", "sprites/map/floor_solid_size_1.png");
 loadSprite("ladder", "sprites/map/ladder_size_1.png");
 loadSprite("oil_drum", "sprites/map/oil_drum_1.png");
 loadSprite("straight_barrel_x4", "sprites/map/straight_barrel_x4.png");
-loadSprite("barrel", "sprites/obstacles/falling_barrel_1.png");
 loadSprite("heart", "sprites/misc/heart.png");
 loadSprite("running_princess_right_2", "sprites/princess/running_princess_right_2.png");
 loadSprite("running_mario_left_2", "sprites/mario/running_mario_left_2.png");
@@ -61,20 +70,20 @@ scene("intro", () => {
     /*keybindings*/
     add([
         text("Press 'left' or 'right' to move left or right!"),
-        pos(width() / 2, height() / 2 -160),
+        pos(width() / 2, height() / 2 - 160),
         scale(0.25),
         origin("center"),
     ]);
 
     add([
         text("Press 'space' to jump!"),
-        pos(width() / 2, height() / 2 -80),
+        pos(width() / 2, height() / 2 - 80),
         scale(0.25),
         origin("center"),
     ]);
 
     add([
-        text("Press 'up' or 'down'to climb or climb down ladders!"),
+        text("Press 'up' or 'down' to climb or climb down ladders!"),
         pos(width() / 2, height() / 2),
         scale(0.25),
         origin("center"),
@@ -94,15 +103,16 @@ scene("intro", () => {
 
 /*game*/
 scene("game", () => {
-    gravity (200);
+    gravity(250);
 
+    /* game layers */
     layers([
         "background",
         "game",
         "ui",
     ], "game")
 
-    /*mario*/
+    /* spawn mario */
     const mario = add([
         sprite("mario"),
         pos(60, 379),
@@ -110,47 +120,46 @@ scene("game", () => {
         body(),
         scale(0.32),
         health(3),
+        layer("game"),
     ])
 
     /*mario jump*/
     function jump() {
         if (mario.isGrounded()) {
-            mario.jump(100);
+            mario.jump(120);
         }
     }
-    
+
     onKeyPress("space", jump);
-    
+
     // DK
     const DK = add([
         sprite("DK"),
-        pos(100,22),
+        pos(100, 22),
         layer("game"),
         scale(0.25),
     ])
-    
+
     DK.play("beating")
-    
+
     /*mario animations*/
     onUpdate(() => {
         const curAnim = mario.curAnim()
-        
+
         if (isKeyDown("left")) {
             if (curAnim !== "run_left") {
                 mario.play("run_left")
             }
-
             mario.pos.x -= speed
         }
-        
+
         else if (isKeyDown("right")) {
             if (curAnim !== "run_right") {
                 mario.play("run_right")
             }
-
             mario.pos.x += speed
         }
-        
+
         else {
             if (curAnim) {
                 var directionAnim = curAnim.split('_')[1];
@@ -158,7 +167,7 @@ scene("game", () => {
             }
         }
     })
-    
+
     mario.play("idle_right")
 
     /*princess*/
@@ -167,10 +176,12 @@ scene("game", () => {
         pos(245, 5),
         area(),
         scale(0.35),
-        "princess",
+        "princess"
     ])
 
     /*ladders*/
+
+    /* [first rung x, first rung y, number of rung] */
     var arr_ladder = [
         [420, 401, 5],  /*rez-de-chaussee*/
 
@@ -188,8 +199,10 @@ scene("game", () => {
         [315, 81, 5],  /*5th floor*/
     ];
 
-    var height_ladder = 21 * 0.35;  /*scale*/
+    /*ladder scale*/
+    var height_ladder = 21 * 0.35;
 
+    /*add ladders*/
     arr_ladder.forEach(function (each_ladder) {
         for (var i = 0; i < each_ladder[2]; i++) {
             add([
@@ -198,16 +211,17 @@ scene("game", () => {
                 area(),
                 scale(0.35),
                 'ladder',
-                layer("background")
+                layer("background"),
             ])
         }
     })
 
     var getLadders = get('ladder');
 
+    /*climb ladders*/
     mario.onUpdate(() => {
         getLadders.forEach(function (each_ladder) {
-            if (mario.isColliding(each_ladder)) {
+            if (mario.isTouching(each_ladder)) {
                 if (isKeyDown("up")) {
                     mario.pos.y -= climbing_speed;
                     mario.jump(100);
@@ -240,7 +254,7 @@ scene("game", () => {
         "             $ $                      ",
         "                                      ",
         "                                      ",
-        "             $ $----                  ",
+        "             $ $----__                ",
         "                ======                ",
         "                                      ",
         "             $ $                      ",
@@ -266,8 +280,8 @@ scene("game", () => {
         "     --------------                   ",
         "     ==============---                ",
         "                   ===---             ",
-        "                      ===--           ",
-        "                         ===  -       ",
+        "                      ===--_          ",
+        "                         ===__-       ",
         "                            ===       ",
         "                                      ",
         "                                      ",
@@ -298,9 +312,9 @@ scene("game", () => {
         "                      ---===          ",
         "                   ---===             ",
         "                ---===                ",
-        "                ===                   ",
-        "           --===                      ",
-        "       -  ===                         ",
+        "             ___===                   ",
+        "          _--===                      ",
+        "       -__===                         ",
         "       ===                            ",
         "                                      ",
         "                          $           ",
@@ -329,11 +343,11 @@ scene("game", () => {
         "     ==---                $           ",
         "       ===---                         ",
         "          ===---                      ",
-        "             ===--        $           ",
-        "                ===  -                ",
+        "             ===--_       $           ",
+        "                ===__-                ",
         "                   ===---             ",
-        "                      ===--           ",
-        "                         ===  -       ",
+        "                      ===--_          ",
+        "                         ===__-       ",
         "                            ===       ",
         "                                      ",
         "                                      ",
@@ -363,10 +377,10 @@ scene("game", () => {
         "                         ---===       ",
         "             $        ---===          ",
         "                   ---===             ",
-        "                   ===                ",
+        "                ___===                ",
         "             ---===                   ",
-        "           --===                      ",
-        "       -  ===                         ",
+        "          _--===                      ",
+        "       -__===                         ",
         "       ===                            ",
         "                                      ",
         "                                      ",
@@ -398,8 +412,8 @@ scene("game", () => {
         "             ===---                   ",
         "                ===---                ",
         "                   ===---             ",
-        "                      ===--           ",
-        "                         ===  -       ",
+        "                      ===--_          ",
+        "                         ===__-       ",
         "                            ===       ",
         "                                      ",
         "                                      ",
@@ -444,6 +458,14 @@ scene("game", () => {
             layer("background"),
         ],
 
+        "_": () => [
+            sprite("floor_solid"),
+            area(),
+            scale(0.35),
+            layer("background"),
+            "top_ladder",
+        ],
+
         "=": () => [
             sprite("floor"),
             scale(0.35),
@@ -472,6 +494,11 @@ scene("game", () => {
         ],
     });
 
+    /* floor appear/disappear when climbing */
+    onUpdate("top_ladder", (top_ladder) => {
+        top_ladder.solid = top_ladder.pos.dist(mario.pos) >= 45
+    })
+
     /*barrels*/
 
     /*spawn barrels*/
@@ -480,8 +507,8 @@ scene("game", () => {
             sprite("barrel"),
             area(),
             body(),
-            pos(190,70),
-            scale(0.35),
+            pos(190, 70),
+            scale(0.16),
             'barrel',
         ]);
 
@@ -491,48 +518,48 @@ scene("game", () => {
     spawnBarrel();
 
     /*destroy barrels if out of map*/
-    onUpdate("barrel",(barrel) => {
+    onUpdate("barrel", (barrel) => {
         if (barrel.pos.y >= fall) {
             destroy(barrel);
         }
     })
 
     /*barrels pattern*/
-    onUpdate("barrel",(barrel) => {
+    onUpdate("barrel", (barrel) => {
         if (barrel.pos.y < 80) {
-            barrel.move(50, 0)
+            barrel.move(60, 0)
         }
 
-        else if (barrel.pos.y > 120 && barrel.pos.y < 135) {
-            barrel.move(-50, 0)
+        else if (barrel.pos.y > 120 && barrel.pos.y < 145) {
+            barrel.move(-60, 0)
         }
 
-        else if (barrel.pos.y > 185 && barrel.pos.y < 200) {
-            barrel.move(50, 0)
+        else if (barrel.pos.y > 185 && barrel.pos.y < 210) {
+            barrel.move(60, 0)
         }
 
-        else if (barrel.pos.y > 250 && barrel.pos.y < 265) {
-            barrel.move(-50, 0)
+        else if (barrel.pos.y > 250 && barrel.pos.y < 275) {
+            barrel.move(-60, 0)
         }
 
         else if (barrel.pos.y > 315 && barrel.pos.y < 340) {
-            barrel.move(50, 0)
+            barrel.move(60, 0)
         }
 
         else if (barrel.pos.y > 385) {
-            barrel.move(-50, 0)
+            barrel.move(-60, 0)
         }
     })
 
-    /*if mario collides with any barrel*/
-    onUpdate("barrel",(barrel) => {
+    /*lose life if mario collides with any barrel*/
+    onUpdate("barrel", (barrel) => {
         if (barrel.isTouching(mario)) {
             /*lose life*/
             mario.hurt(1);
             addKaboom(mario.pos);
             destroy(barrel);
 
-            /*remove hp*/
+            /*remove hp on counter*/
             hp.value -= 1
             hp.text = "HP:" + hp.value
         }
@@ -566,10 +593,11 @@ scene("game", () => {
         scale(0.25),
     ]);
 
-    onUpdate(() => {
-        score++;
-        scoreLabel.text = score;
-    });
+    /* score refresh every frame */
+    // onUpdate(() => {
+    //     score++;
+    //     scoreLabel.text = score;
+    // });
 
     /*hp counter*/
     const hp = add([
@@ -606,7 +634,7 @@ scene("lose", (score) => {
     ]);
 
     /*go back to game*/
-    onKeyPress("enter", () => go("game"));
+    onKeyPress("enter", () => go("intro"));
 })
 
 /*win scene*/
@@ -649,7 +677,7 @@ scene("win", (score) => {
     ]);
 
     /*go back to game*/
-    onKeyPress("enter", () => go("game"));
+    onKeyPress("enter", () => go("intro"));
 })
 
-go("intro")
+go("game")
