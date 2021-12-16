@@ -3,7 +3,7 @@ import kaboom from "https://unpkg.com/kaboom/dist/kaboom.mjs";
 /*context*/
 const fall = 500
 const speed = 1.7
-const climbing_speed = 0.001
+const climbing_speed = 0.1
 
 kaboom({
     global: true,
@@ -40,22 +40,20 @@ loadSpriteAtlas("sprites/donkey_kong/DK.png", {
         height: 250,
         sliceX: 6,
         anims: {
-            beating: {from: 0, to: 1, loop:true,speed:5},
-            baril_drop: {from: 2, to: 5, speed:5},
+            beating: { from: 0, to: 1, loop: true, speed: 5 },
+            baril_drop: { from: 2, to: 5, speed: 5 },
         },
     },
 })
 loadSpriteAtlas("sprites/obstacles/barrel.png", {
     "barrel": {
-        x:0,
-        y:0,
-        width:360,
-        height:90,
-        sliceX:4,
-        anims: {rolling:
-            {from:0,to:3,loop:true,speed:5}
-        },
-    },
+        x: 0,
+        y: 0,
+        width: 360,
+        height: 90,
+        sliceX: 4,
+        anims: { from: 0, to: 3, loop: true, speed: 5 }
+    }
 });
 loadSprite("floor", "sprites/map/floor_size_1.png");
 loadSprite("floor_solid", "sprites/map/floor_solid_size_1.png");
@@ -72,20 +70,20 @@ scene("intro", () => {
     /*keybindings*/
     add([
         text("Press 'left' or 'right' to move left or right!"),
-        pos(width() / 2, height() / 2 -160),
+        pos(width() / 2, height() / 2 - 160),
         scale(0.25),
         origin("center"),
     ]);
 
     add([
         text("Press 'space' to jump!"),
-        pos(width() / 2, height() / 2 -80),
+        pos(width() / 2, height() / 2 - 80),
         scale(0.25),
         origin("center"),
     ]);
 
     add([
-        text("Press 'up' or 'down'to climb or climb down ladders!"),
+        text("Press 'up' or 'down' to climb or climb down ladders!"),
         pos(width() / 2, height() / 2),
         scale(0.25),
         origin("center"),
@@ -105,15 +103,16 @@ scene("intro", () => {
 
 /*game*/
 scene("game", () => {
-    gravity (250);
+    gravity(250);
 
+    /* game layers */
     layers([
         "background",
         "game",
         "ui",
     ], "game")
 
-    /*mario*/
+    /* spawn mario */
     const mario = add([
         sprite("mario"),
         pos(60, 379),
@@ -121,46 +120,46 @@ scene("game", () => {
         body(),
         scale(0.32),
         health(3),
+        layer("game"),
     ])
 
     /*mario jump*/
     function jump() {
-        if (mario.isGrounded()) 
-        {
+        if (mario.isGrounded()) {
             mario.jump(120);
         }
     }
-    
+
     onKeyPress("space", jump);
-    
+
     // DK
     const DK = add([
         sprite("DK"),
-        pos(100,22),
+        pos(100, 22),
         layer("game"),
         scale(0.25),
     ])
-    
+
     DK.play("beating")
-    
+
     /*mario animations*/
     onUpdate(() => {
         const curAnim = mario.curAnim()
-        
+
         if (isKeyDown("left")) {
             if (curAnim !== "run_left") {
                 mario.play("run_left")
             }
             mario.pos.x -= speed
         }
-        
+
         else if (isKeyDown("right")) {
             if (curAnim !== "run_right") {
                 mario.play("run_right")
             }
             mario.pos.x += speed
         }
-        
+
         else {
             if (curAnim) {
                 var directionAnim = curAnim.split('_')[1];
@@ -168,7 +167,7 @@ scene("game", () => {
             }
         }
     })
-    
+
     mario.play("idle_right")
 
     /*princess*/
@@ -180,26 +179,30 @@ scene("game", () => {
         "princess"
     ])
 
-    /*ladders*/
+    /*ladders and collide zones*/
+
+    /* [first rung x, first rung y, number of rung, collide zone x, collide zone y] */
     var arr_ladder = [
-        [420, 401, 5, [100, 50]],  /*rez-de-chaussee*/
+        [420, 401, 5, [416, 336]],  /*rez-de-chaussee*/
 
-        [135, 335, 5, [100, 50]],  /*1st floor*/
-        [255, 343, 7, [100, 50]],
+        [135, 335, 5, [251, 263]],  /*1st floor*/
+        [255, 343, 7, [131, 270]],
 
-        [285, 277, 7, [100, 50]],  /*2nd floor*/
-        [420, 269, 5, [100, 50]],
+        [285, 277, 7, [281, 197]],  /*2nd floor*/
+        [420, 269, 5, [416, 204]],
 
-        [210, 207, 6, [100, 50]],  /*3rd floor*/
-        [135, 203, 5, [100, 50]],
+        [210, 207, 6, [131, 137]],  /*3rd floor*/
+        [135, 203, 5, [206, 134]],
 
-        [420, 137, 5, [100, 50]],  /*4th floor*/
+        [420, 137, 5, [416, 71]],  /*4th floor*/
 
-        [315, 81, 5, [100, 50]],  /*5th floor*/
+        [315, 81, 5, [311, 16]],  /*5th floor*/
     ];
 
-    var height_ladder = 21 * 0.35;  /*scale*/
+    /*ladder scale*/
+    var height_ladder = 21 * 0.35;
 
+    /*add ladders and collide zones*/
     arr_ladder.forEach(function (each_ladder) {
         for (var i = 0; i < each_ladder[2]; i++) {
             add([
@@ -213,14 +216,64 @@ scene("game", () => {
                     top_ladder: each_ladder[3]
                 }
             ])
+
+            add_zone(
+                'tagZone_' + each_ladder[3][0] + '_' + each_ladder[3][1],
+                each_ladder[3][0],
+                each_ladder[3][1]
+            );
         }
     })
 
+    // collide_zone('tagZone', () => {
+    //     console.log('remove')
+    // })
+    // not_collide_zone('tagZone', () => {
+    //     console.log('add')
+    // })
+
     var getLadders = get('ladder');
 
+    /*collide zones*/
+    function add_zone(tag_name, pos_x, pos_y) {
+        /* external collide zone */
+        add([
+            rect(72, 96),
+            pos(pos_x - 24, pos_y - 24),
+            tag_name + '_externe',
+            area(),
+            color(127, 200, 255),
+            opacity(0.25),  /* set opacity !=0 for debug */
+        ])
+
+        /* internal collide zone */
+        add([
+            rect(24, 48),
+            pos(pos_x, pos_y),
+            tag_name,
+            area(),
+            color(127, 200, 255),
+            opacity(0.25),  /* set opacity !=0 for debug */
+        ])
+    }
+
+    /*mario collide/not collide zone callback*/
+    function collide_zone(tag_name, cb) {
+        mario.onCollide(tag_name, () => {
+            cb();
+        })
+    }
+
+    function not_collide_zone(tag_name, cb) {
+        mario.onCollide(tag_name + '_externe', () => {
+            cb();
+        })
+    }
+
+    /*climb ladders*/
     mario.onUpdate(() => {
         getLadders.forEach(function (each_ladder) {
-            if (mario.isColliding(each_ladder)) {
+            if (mario.isTouching(each_ladder)) {
                 if (isKeyDown("up")) {
                     mario.pos.y -= climbing_speed;
                     mario.jump(100);
@@ -229,8 +282,6 @@ scene("game", () => {
                 else if (isKeyDown("down")) {
                     mario.pos.y += climbing_speed;
                 }
-
-                console.log(each_ladder)
             }
         })
     })
@@ -492,10 +543,10 @@ scene("game", () => {
     /*spawn barrels*/
     function spawnBarrel() {
         add([
-            sprite("barrel", { anim: "rolling", }),
+            sprite("barrel"),
             area(),
             body(),
-            pos(190,70),
+            pos(190, 70),
             scale(0.2),
             'barrel',
         ]);
@@ -506,14 +557,14 @@ scene("game", () => {
     // spawnBarrel();
 
     /*destroy barrels if out of map*/
-    onUpdate("barrel",(barrel) => {
+    onUpdate("barrel", (barrel) => {
         if (barrel.pos.y >= fall) {
             destroy(barrel);
         }
     })
 
     /*barrels pattern*/
-    onUpdate("barrel",(barrel) => {
+    onUpdate("barrel", (barrel) => {
         if (barrel.pos.y < 80) {
             barrel.move(50, 0)
         }
@@ -540,14 +591,14 @@ scene("game", () => {
     })
 
     /*lose life if mario collides with any barrel*/
-    onUpdate("barrel",(barrel) => {
+    onUpdate("barrel", (barrel) => {
         if (barrel.isTouching(mario)) {
             /*lose life*/
             mario.hurt(1);
             addKaboom(mario.pos);
             destroy(barrel);
 
-            /*remove hp*/
+            /*remove hp on counter*/
             hp.value -= 1
             hp.text = "HP:" + hp.value
         }
@@ -581,6 +632,7 @@ scene("game", () => {
         scale(0.25),
     ]);
 
+    /* score refresh every frame */
     onUpdate(() => {
         score++;
         scoreLabel.text = score;
@@ -667,4 +719,4 @@ scene("win", (score) => {
     onKeyPress("enter", () => go("intro"));
 })
 
-go("intro")
+go("game")
