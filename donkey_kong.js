@@ -212,9 +212,6 @@ scene("game", () => {
                 scale(0.35),
                 'ladder',
                 layer("background"),
-                {
-                    top_ladder: each_ladder[3]
-                }
             ])
 
             add_zone(
@@ -236,7 +233,7 @@ scene("game", () => {
             tag_name + '_externe',
             area(),
             color(127, 200, 255),
-            opacity(0.25),  /* set opacity !=0 for debug */
+            opacity(0),  /* set opacity !=0 for debug */
         ])
 
         /* internal collide zone */
@@ -246,7 +243,7 @@ scene("game", () => {
             tag_name,
             area(),
             color(127, 200, 255),
-            opacity(0.25),  /* set opacity !=0 for debug */
+            opacity(0),  /* set opacity !=0 for debug */
         ])
     }
 
@@ -263,13 +260,13 @@ scene("game", () => {
         })
     }
 
-    collide_zone('tagZone', () => {
-        console.log('remove')
-    })
+    // collide_zone('tagZone', () => {
+    //     console.log('remove')
+    // })
 
-    not_collide_zone('tagZone', () => {
-        console.log('add')
-    })
+    // not_collide_zone('tagZone', () => {
+    //     console.log('add')
+    // })
 
     /*climb ladders*/
     mario.onUpdate(() => {
@@ -555,7 +552,7 @@ scene("game", () => {
         wait(rand(3, 6), spawnBarrel);  /*spawn randomly between 3 to 6 seconds*/
     }
 
-    // spawnBarrel();
+    spawnBarrel();
 
     /*destroy barrels if out of map*/
     onUpdate("barrel", (barrel) => {
