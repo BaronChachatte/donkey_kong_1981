@@ -225,13 +225,6 @@ scene("game", () => {
         }
     })
 
-    // collide_zone('tagZone', () => {
-    //     console.log('remove')
-    // })
-    // not_collide_zone('tagZone', () => {
-    //     console.log('add')
-    // })
-
     var getLadders = get('ladder');
 
     /*collide zones*/
@@ -269,6 +262,14 @@ scene("game", () => {
             cb();
         })
     }
+
+    collide_zone('tagZone', () => {
+        console.log('remove')
+    })
+
+    not_collide_zone('tagZone', () => {
+        console.log('add')
+    })
 
     /*climb ladders*/
     mario.onUpdate(() => {
