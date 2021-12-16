@@ -736,5 +736,5 @@ var bgmusic= play("backmusic", {
     loop: true
 })
 
-/*go ("intro")
+/*go ("intro") */
 go("game")
