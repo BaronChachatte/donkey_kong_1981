@@ -52,8 +52,10 @@ loadSpriteAtlas("sprites/obstacles/barrel.png", {
         width:360,
         height:90,
         sliceX:4,
-        anims: {from:0,to:3,loop:true,speed:5}
-    }
+        anims: {rolling:
+            {from:0,to:3,loop:true,speed:5}
+        },
+    },
 });
 loadSprite("floor", "sprites/map/floor_size_1.png");
 loadSprite("floor_solid", "sprites/map/floor_solid_size_1.png");
@@ -490,7 +492,7 @@ scene("game", () => {
     /*spawn barrels*/
     function spawnBarrel() {
         add([
-            sprite("barrel"),
+            sprite("barrel", { anim: "rolling", }),
             area(),
             body(),
             pos(190,70),
