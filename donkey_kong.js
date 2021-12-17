@@ -1,4 +1,4 @@
-import kaboom from "https://unpkg.com/kaboom/dist/kaboom.mjs"; /* library used = kaboom.js */
+import kaboom from "https://unpkg.com/kaboom/dist/kaboom.mjs";
 
 /*context*/
 const fall = 500
@@ -81,7 +81,7 @@ loadSound("hit","Sounds/oof.mp3")
 
 var imusic = play("intro", {
     volume:.3,
-    loop: true /* replay sound */
+    loop: true
 })
 
 var bgmusic= play("backmusic", {
@@ -394,7 +394,6 @@ scene("game", () => {
         ],
     });
 
-    /* switch the background music */
     imusic.pause()
     bgmusic.play()
 
@@ -657,7 +656,7 @@ scene("game", () => {
 });
 
 /*lose scene*/
-scene("lose", (score) => {
+scene("lose", () => {
     add([
         sprite("standing_donkey_kong"),
         pos(width() / 2, height() / 2 - 80),
@@ -667,9 +666,9 @@ scene("lose", (score) => {
 
     /*display score*/
     add([
-        text(score),
+        text("You lost the game!"),
         pos(width() / 2, height() / 2 + 80),
-        scale(1.5),
+        scale(0.4),
         origin("center"),
     ]);
 
