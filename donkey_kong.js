@@ -1,4 +1,4 @@
-import kaboom from "https://unpkg.com/kaboom/dist/kaboom.mjs";
+import kaboom from "https://unpkg.com/kaboom/dist/kaboom.mjs"; /* library used = kaboom.js */
 
 /*context*/
 const fall = 500
@@ -81,7 +81,7 @@ loadSound("hit","Sounds/oof.mp3")
 
 var imusic = play("intro", {
     volume:.3,
-    loop: true
+    loop: true /* replay sound */
 })
 
 var bgmusic= play("backmusic", {
@@ -394,6 +394,7 @@ scene("game", () => {
         ],
     });
 
+    /* switch the background music */
     imusic.pause()
     bgmusic.play()
 
