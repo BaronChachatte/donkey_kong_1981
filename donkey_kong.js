@@ -688,19 +688,19 @@ scene("game", () => {
     //     }
     // })
 
-    // const timer = add([
-    //     text("TIMER: 1500"),
-    //     pos(445, 0),
-    //     { value: 1500 },
-    //     scale(0.25),
-    // ])
-    // onUpdate(() => {
-    //     timer.value--;
-    //     if (timer.value <= 0){
-    //         go("lose")
-    //     }
-    //     timer.text = "TIMER:" + timer.value
-    // });
+    const timer = add([
+        text("TIMER: 1500"),
+        pos(445, 0),
+        { value: 1500 },
+        scale(0.25),
+    ])
+    onUpdate(() => {
+        timer.value--;
+        if (timer.value <= 0){
+            go("lose")
+        }
+        timer.text = "TIMER:" + timer.value
+    });
 
 
     /*hp counter*/
