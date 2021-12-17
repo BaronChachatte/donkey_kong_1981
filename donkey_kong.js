@@ -79,6 +79,7 @@ loadSound("jump","Sounds/jump.wav");
 loadSound("walk","Sounds/walking.wav");
 loadSound("win1","Sounds/win1.wav");
 loadSound("win2","Sounds/win2.wav")
+loadSound("hit","Sounds/oof.mp3")
 
 var wmusic = play("walk", {
     volume:.3,
@@ -94,10 +95,13 @@ var bgmusic= play("backmusic", {
 })
 
 
+
 /*intro*/
 scene("intro", () => {
     imusic.play()
+    wmusic.pause()
     bgmusic.pause()
+
     onKeyPress("enter", () => {
         imusic.pause()
     }),
@@ -139,6 +143,7 @@ scene("intro", () => {
 scene("game", () => {
 
     imusic.pause()
+    wmusic.pause()
     bgmusic.play()
 
     gravity(250);
@@ -182,8 +187,9 @@ scene("game", () => {
     ])
 
     DK.play("beating")
-
+    
     /*mario animations*/
+    mario.play("idle_right")
     onUpdate(() => {
         const curAnim = mario.curAnim()
 
@@ -208,37 +214,6 @@ scene("game", () => {
             }
         }
     })
-    
-        /* walk animation sound effect for Mario */
-    
-    let timer = 0
-    /* to go left */
-    onKeyPress("left", () => {
-    // reset on press
-        timer = 0
-    })
-    onKeyDown("left", () => {
-        timer += dt()
-        // fire every 1 second "left" is held down
-    if (timer > 1) {
-        timer = 0
-        play("walk")
-        } 
-    })
-    /* to go right */
-    onKeyPress("right", () => {
-        timer = 0
-                
-    })
-    onKeyDown("right", () => {
-        timer += dt()
-
-    if (timer > 1) {
-        timer = 0
-        play("walk")  
-        } 
-    })
-    mario.play("idle_right")
 
     /*princess*/
     const princess = add([
@@ -304,266 +279,7 @@ scene("game", () => {
         })
     })
 
-    /*level*/
-    addLevel([
-        "             $ $                      ",
-        "                                      ",
-        "                                      ",
-        "             $ $                      ",
-        "                                      ",
-        "                                      ",
-        "             $ $                      ",
-        "                                      ",
-        "                                      ",
-        "             $ $                      ",
-        "    4                                 ",
-        "                                      ",
-        "             $ $                      ",
-        "                                      ",
-        "                                      ",
-        "             $ $                      ",
-        "                                      ",
-        "                                      ",
-        "             $ $----__                ",
-        "                ======                ",
-        "                                      ",
-        "             $ $                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "             ===                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "             $ $                      ",
-        "                                      ",
-        "                                      ",
-        "             $ $                      ",
-        "                                      ",
-        "                                      ",
-        "             $ $                      ",
-        "                                      ",
-        "     --------------                   ",
-        "     ==============---                ",
-        "                   ===---             ",
-        "                      ===--_          ",
-        "                         ===__-       ",
-        "                            ===       ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                $                     ",
-        "                                      ",
-        "                                      ",
-        "                $                     ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                $                     ",
-        "                               --     ",
-        "                            ---==     ",
-        "                $        ---===       ",
-        "                      ---===          ",
-        "                   ---===             ",
-        "                ---===                ",
-        "             ___===                   ",
-        "          _--===                      ",
-        "       -__===                         ",
-        "       ===                            ",
-        "                                      ",
-        "                          $           ",
-        "                                      ",
-        "                                      ",
-        "                          $           ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                          $           ",
-        "                                      ",
-        "     --                               ",
-        "     ==---                $           ",
-        "       ===---                         ",
-        "          ===---                      ",
-        "             ===--_       $           ",
-        "                ===__-                ",
-        "                   ===---             ",
-        "                      ===--_          ",
-        "                         ===__-       ",
-        "                            ===       ",
-        "                                      ",
-        "                                      ",
-        "             $                        ",
-        "                                      ",
-        "                                      ",
-        "             $                        ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "             $                        ",
-        "                                      ",
-        "                                      ",
-        "             $                 --     ",
-        "                            ---==     ",
-        "                         ---===       ",
-        "             $        ---===          ",
-        "                   ---===             ",
-        "                ___===                ",
-        "             ---===                   ",
-        "          _--===                      ",
-        "       -__===                         ",
-        "       ===                            ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "     --                               ",
-        "     ==---                            ",
-        "       ===---                         ",
-        "          ===---                      ",
-        "             ===---                   ",
-        "                ===---                ",
-        "                   ===---             ",
-        "                      ===--_          ",
-        "                         ===__-       ",
-        "                            ===       ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                $                     ",
-        "                                      ",
-        "                                      ",
-        "       o        $                     ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                                      ",
-        "                $                     ",
-        "                               ---    ",
-        "                            ---===    ",
-        "                $        ---===       ",
-        "                      ---===          ",
-        "                   ---===             ",
-        "    ---------------===                ",
-        "    ===============                   ",
-    ], {
-
-        width: 15,
-        height: 2,
-
-        "-": () => [
-            sprite("floor_solid"),
-            area(),
-            solid(),
-            scale(0.35),
-            layer("background"),
-        ],
-
-        "_": () => [
-            sprite("floor_solid"),
-            area(),
-            scale(0.35),
-            layer("background"),
-            "top_ladder",
-        ],
-
-        "=": () => [
-            sprite("floor"),
-            scale(0.35),
-            layer("background"),
-        ],
-
-        "$": () => [
-            sprite("ladder"),
-            area(),
-            scale(0.35),
-            layer("background"),
-        ],
-
-        "o": () => [
-            sprite("oil_drum"),
-            area(),
-            scale(0.35),
-            layer("background"),
-        ],
-
-        "4": () => [
-            sprite("straight_barrel_x4"),
-            area(),
-            scale(0.35),
-            layer("background"),
-        ],
-    });
-
+    
     /* floor appear/disappear when climbing */
     onUpdate("top_ladder", (top_ladder) => {
         top_ladder.solid = top_ladder.pos.dist(mario.pos) >= 35
@@ -584,16 +300,10 @@ scene("game", () => {
 
         wait(rand(3, 6), spawnBarrel);  /*spawn randomly between 3 to 6 seconds*/
     }
-
+    
     spawnBarrel();
 
-    /*destroy barrels if out of map*/
-    onUpdate("barrel", (barrel) => {
-        if (barrel.pos.y >= fall) {
-            destroy(barrel);
-        }
-    })
-
+    
     /*barrels pattern*/
     onUpdate("barrel", (barrel) => {
         if (barrel.pos.y < 76) {
@@ -603,7 +313,7 @@ scene("game", () => {
         else if (barrel.pos.y > 120 && barrel.pos.y < 145) {
             barrel.move(-90, 0)
         }
-
+        
         else if (barrel.pos.y > 185 && barrel.pos.y < 210) {
             barrel.move(90, 0)
         }
@@ -611,7 +321,7 @@ scene("game", () => {
         else if (barrel.pos.y > 250 && barrel.pos.y < 275) {
             barrel.move(-90, 0)
         }
-
+        
         else if (barrel.pos.y > 315 && barrel.pos.y < 340) {
             barrel.move(90, 0)
         }
@@ -619,24 +329,57 @@ scene("game", () => {
         else if (barrel.pos.y > 385) {
             barrel.move(-90, 0)
         }
-    })
 
-    /*lose life if mario collides with any barrel*/
-    onUpdate("barrel", (barrel) => {
         if (barrel.isTouching(mario)) {
             /*lose life*/
             mario.hurt(1);
             addKaboom(mario.pos);
             destroy(barrel);
-
+            play("hit")
+            
             /*remove hp on counter*/
             hp.value -= 1
             hp.text = "HP:" + hp.value
         }
+        
+        if (barrel.pos.y >= fall) {
+            destroy(barrel);
+        }
     })
 
-    /*lose conditions*/
+    
+    /*bruit de pas
+    // let timer = 0
+    
+    // onKeyPress("left", () => {
+        // // reset on press
+        //     timer = 0
+        // })
+        // onKeyDown("left", () => {
+            //     timer += dt()
+            //     // fire every 1 second "left" is held down
+            // if (timer > 1) {
+                //     timer = 0
+                //     play("walk")
+    //     } 
+    // })
+    
+    // onKeyPress("right", () => {
+        //     timer = 0
+        
+        // })
+        // onKeyDown("right", () => {
+            //     timer += dt()
+            
+            // if (timer > 1) {
+                //     timer = 0
+    //     play("walk")  
+    //     } 
+    // }) 
 
+    
+    /*lose conditions*/
+    
     /*lose if mario is out of map*/
     mario.action(() => {
         if (mario.pos.y >= fall) {
@@ -647,7 +390,7 @@ scene("game", () => {
             go("lose", score)
         }
     })
-
+    
     /*lose when hp reaches 0*/
     mario.onDeath(() => {
         go("lose", score)
@@ -656,7 +399,7 @@ scene("game", () => {
         }),
         bgmusic.pause()  
     })
-
+    
     /*win conditions*/
     mario.onCollide("princess", () => {
         bgmusic.pause()
@@ -665,17 +408,17 @@ scene("game", () => {
         }),
         go("win", score);
     });
-
+    
     /*score counter*/
     let score = 0;
-
+    
     const scoreLabel = add([
         text(0),
         pos(445, 35),
         {value: 0},
         scale(0.25),
     ]);
-
+    
     // incrémentation du score lors d'un saut 
     // onUpdate("barrel",(barrel) => {
     //     if (barrel.pos.dist(mario.pos) <= 40 )
@@ -685,22 +428,22 @@ scene("game", () => {
     //         score+=50;
     //     }
     // })
-
+    
     // const timer = add([
-    //     text("TIMER: 1500"),
-    //     pos(445, 0),
-    //     { value: 1500 },
-    //     scale(0.25),
-    // ])
-    // onUpdate(() => {
-    //     timer.value--;
-    //     if (timer.value <= 0){
+        //     text("TIMER: 1500"),
+        //     pos(445, 0),
+        //     { value: 1500 },
+        //     scale(0.25),
+        // ])
+        // onUpdate(() => {
+            //     timer.value--;
+            //     if (timer.value <= 0){
     //         go("lose")
     //     }
     //     timer.text = "TIMER:" + timer.value
     // });
-
-
+    
+    
     /*hp counter*/
     const hp = add([
         text("HP: 3"),
@@ -718,7 +461,7 @@ scene("lose", (score) => {
         scale(0.5),
         origin("center"),
     ]);
-
+    
     /*display score*/
     add([
         text(score),
@@ -726,7 +469,7 @@ scene("lose", (score) => {
         scale(1.5),
         origin("center"),
     ]);
-
+    
     /*play again*/
     add([
         text("Press 'Enter' to play again!"),
@@ -734,7 +477,7 @@ scene("lose", (score) => {
         scale(0.40),
         origin("center"),
     ]);
-
+    
     /*go back to game*/
     onKeyPress("enter", () => go("intro"));
 })
@@ -747,21 +490,21 @@ scene("win", (score) => {
         scale(1),
         origin("center"),
     ]);
-
+    
     add([
         sprite("heart"),
         pos(width() / 2, height() / 2 - 80),
         scale(1),
         origin("center"),
     ]);
-
+    
     add([
         sprite("running_mario_left_2"),
         pos(width() / 2 + 160, height() / 2 - 80),
         scale(1),
         origin("center"),
     ]);
-
+    
     /*display score*/
     add([
         text(score),
@@ -769,7 +512,7 @@ scene("win", (score) => {
         scale(1.5),
         origin("center"),
     ]);
-
+    
     /*play again*/
     add([
         text("Press 'Enter' to play again!"),
@@ -777,9 +520,268 @@ scene("win", (score) => {
         scale(0.40),
         origin("center"),
     ]);
-
+    
     /*go back to game*/
     onKeyPress("enter", () => go("intro"));
 })
 
-go("game")
+go("intro")
+/*level*/
+addLevel([
+    "             $ $                      ",
+    "                                      ",
+    "                                      ",
+    "             $ $                      ",
+    "                                      ",
+    "                                      ",
+    "             $ $                      ",
+    "                                      ",
+    "                                      ",
+    "             $ $                      ",
+    "    4                                 ",
+    "                                      ",
+    "             $ $                      ",
+    "                                      ",
+    "                                      ",
+    "             $ $                      ",
+    "                                      ",
+    "                                      ",
+    "             $ $----__                ",
+    "                ======                ",
+    "                                      ",
+    "             $ $                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "             ===                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "             $ $                      ",
+    "                                      ",
+    "                                      ",
+    "             $ $                      ",
+    "                                      ",
+    "                                      ",
+    "             $ $                      ",
+    "                                      ",
+    "     --------------                   ",
+    "     ==============---                ",
+    "                   ===---             ",
+    "                      ===--_          ",
+    "                         ===__-       ",
+    "                            ===       ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                $                     ",
+    "                                      ",
+    "                                      ",
+    "                $                     ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                $                     ",
+    "                               --     ",
+    "                            ---==     ",
+    "                $        ---===       ",
+    "                      ---===          ",
+    "                   ---===             ",
+    "                ---===                ",
+    "             ___===                   ",
+    "          _--===                      ",
+    "       -__===                         ",
+    "       ===                            ",
+    "                                      ",
+    "                          $           ",
+    "                                      ",
+    "                                      ",
+    "                          $           ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                          $           ",
+    "                                      ",
+    "     --                               ",
+    "     ==---                $           ",
+    "       ===---                         ",
+    "          ===---                      ",
+    "             ===--_       $           ",
+    "                ===__-                ",
+    "                   ===---             ",
+    "                      ===--_          ",
+    "                         ===__-       ",
+    "                            ===       ",
+    "                                      ",
+    "                                      ",
+    "             $                        ",
+    "                                      ",
+    "                                      ",
+    "             $                        ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "             $                        ",
+    "                                      ",
+    "                                      ",
+    "             $                 --     ",
+    "                            ---==     ",
+    "                         ---===       ",
+    "             $        ---===          ",
+    "                   ---===             ",
+    "                ___===                ",
+    "             ---===                   ",
+    "          _--===                      ",
+    "       -__===                         ",
+    "       ===                            ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "     --                               ",
+    "     ==---                            ",
+    "       ===---                         ",
+    "          ===---                      ",
+    "             ===---                   ",
+    "                ===---                ",
+    "                   ===---             ",
+    "                      ===--_          ",
+    "                         ===__-       ",
+    "                            ===       ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                $                     ",
+    "                                      ",
+    "                                      ",
+    "       o        $                     ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                                      ",
+    "                $                     ",
+    "                               ---    ",
+    "                            ---===    ",
+    "                $        ---===       ",
+    "                      ---===          ",
+    "                   ---===             ",
+    "    ---------------===                ",
+    "    ===============                   ",
+], {
+
+    width: 15,
+    height: 2,
+
+    "-": () => [
+        sprite("floor_solid"),
+        area(),
+        solid(),
+        scale(0.35),
+        layer("background"),
+    ],
+
+    "_": () => [
+        sprite("floor_solid"),
+        area(),
+        scale(0.35),
+        layer("background"),
+        "top_ladder",
+    ],
+
+    "=": () => [
+        sprite("floor"),
+        scale(0.35),
+        layer("background"),
+    ],
+
+    "$": () => [
+        sprite("ladder"),
+        area(),
+        scale(0.35),
+        layer("background"),
+    ],
+
+    "o": () => [
+        sprite("oil_drum"),
+        area(),
+        scale(0.35),
+        layer("background"),
+    ],
+
+    "4": () => [
+        sprite("straight_barrel_x4"),
+        area(),
+        scale(0.35),
+        layer("background"),
+    ],
+});
