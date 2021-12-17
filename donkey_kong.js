@@ -208,7 +208,36 @@ scene("game", () => {
             }
         }
     })
+    
+        /* walk animation sound effect for Mario */
+    
+    let timer = 0
+    /* to go left */
+    onKeyPress("left", () => {
+    // reset on press
+        timer = 0
+    })
+    onKeyDown("left", () => {
+        timer += dt()
+        // fire every 1 second "left" is held down
+    if (timer > 1) {
+        timer = 0
+        play("walk")
+        } 
+    })
+    /* to go right */
+    onKeyPress("right", () => {
+        timer = 0
+                
+    })
+    onKeyDown("right", () => {
+        timer += dt()
 
+    if (timer > 1) {
+        timer = 0
+        play("walk")  
+        } 
+    })
     mario.play("idle_right")
 
     /*princess*/
