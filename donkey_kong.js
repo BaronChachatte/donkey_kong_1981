@@ -31,7 +31,7 @@ loadSpriteAtlas("sprites/mario/Mario.png", {
         },
     },
 })
-// sprite DK
+/*donkey kong*/
 loadSpriteAtlas("sprites/donkey_kong/DK.png", {
     "DK": {
         x: 0,
@@ -45,6 +45,7 @@ loadSpriteAtlas("sprites/donkey_kong/DK.png", {
         },
     },
 })
+/*barrel*/
 loadSpriteAtlas("sprites/obstacles/barrel.png", {
     "barrel": {
         x: 0,
@@ -67,8 +68,7 @@ loadSprite("running_princess_right_2", "sprites/princess/running_princess_right_
 loadSprite("running_mario_left_2", "sprites/mario/running_mario_left_2.png");
 loadSprite("standing_donkey_kong", "sprites/donkey_kong/standing_donkey_kong.png");
 
-/* sons */
-
+/*sound*/
 loadSound("intro","Sounds/intro1.wav");
 loadSound("longintro","Sounds/intro1_long.wav");
 loadSound("backmusic","Sounds/bacmusic.wav");
@@ -81,12 +81,12 @@ loadSound("win1","Sounds/win1.wav");
 loadSound("win2","Sounds/win2.wav")
 loadSound("hit","Sounds/oof.mp3")
 
-var imusic = play("intro", { /* sound effect of intro music */
+var imusic = play("intro", { /*sound effect intro music*/
     volume:.3,
     loop: true
 })
 
-var bgmusic= play("backmusic", { /* sound effect background music */
+var bgmusic= play("backmusic", { /*sound effect background music*/
     volume: .3,
     loop: true
 })
