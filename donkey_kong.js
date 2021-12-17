@@ -45,7 +45,6 @@ loadSpriteAtlas("sprites/donkey_kong/DK.png", {
         },
     },
 })
-/*barrel*/
 loadSpriteAtlas("sprites/obstacles/barrel.png", {
     "barrel": {
         x: 0,
@@ -80,12 +79,12 @@ loadSound("win1","Sounds/win1.wav");
 loadSound("win2","Sounds/win2.wav")
 loadSound("hit","Sounds/oof.mp3")
 
-var imusic = play("intro", { /*sound effect intro music*/
+var imusic = play("intro", {
     volume:.3,
     loop: true
 })
 
-var bgmusic= play("backmusic", { /*sound effect background music*/
+var bgmusic= play("backmusic", {
     volume: .3,
     loop: true
 })
@@ -98,6 +97,7 @@ scene("intro", () => {
     onKeyPress("enter", () => {
         imusic.pause()
     }),
+
     /*keybindings*/
     add([
         text("Press 'left' or 'right' to move left or right!"),
@@ -114,7 +114,7 @@ scene("intro", () => {
     ]);
 
     add([
-        text("Press 'up' or 'down' to climb or climb down ladders!"),
+        text("Press 'up' to climb ladders!"),
         pos(width() / 2, height() / 2),
         scale(0.25),
         origin("center"),
@@ -132,7 +132,7 @@ scene("intro", () => {
     onKeyPress("enter", () => go("game"));
 })
 
-/*game (parsing)*/
+/*game*/
 scene("game", () => {
     /*level*/
     addLevel([
@@ -349,7 +349,7 @@ scene("game", () => {
 
         width: 15,
         height: 2,
-/* each symbol become a sprite on the map */
+
         "-": () => [
             sprite("floor_solid"),
             area(),
@@ -399,14 +399,14 @@ scene("game", () => {
 
     gravity(250);
 
-    /* game layers */
+    /*game layers*/
     layers([
         "background",
         "game",
         "ui",
     ], "game")
 
-    /* spawn mario */
+    /*spawn mario*/
     const mario = add([
         sprite("mario"),
         pos(60, 379),
@@ -429,7 +429,7 @@ scene("game", () => {
 
     onKeyPress("space", jump);
 
-    // DK
+    /*spawn donkey kong*/
     const DK = add([
         sprite("DK"),
         pos(100, 22),
@@ -591,7 +591,7 @@ scene("game", () => {
             hp.text = "HP:" + hp.value
         }
 
-        if (barrel.pos.y >= fall) { /* destroy barrel when in the void to avoid lag */
+        if (barrel.pos.y >= fall) {
             destroy(barrel);
         }
     })
@@ -643,7 +643,7 @@ scene("game", () => {
             go("lose", score)
         }
 
-        scoreLabel.text = "Score: "+score;
+        scoreLabel.text = "Timer: "+score;
     });
 
     /*hp counter*/
