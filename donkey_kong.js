@@ -81,15 +81,15 @@ loadSound("win1","Sounds/win1.wav");
 loadSound("win2","Sounds/win2.wav")
 loadSound("hit","Sounds/oof.mp3")
 
-var wmusic = play("walk", {
+var wmusic = play("walk", { /* sounds effect of walking */
     volume:.3,
     loop: false,
 })
-var imusic = play("intro", {
+var imusic = play("intro", { /* sound effect of intro music */
     volume:.3,
     loop: true
 })
-var bgmusic= play("backmusic", {
+var bgmusic= play("backmusic", { /* sound effect background music */
     volume: .3,
     loop: true
 })
@@ -139,7 +139,7 @@ scene("intro", () => {
     onKeyPress("enter", () => go("game"));
 })
 
-/*game*/
+/*game (parsing)*/
 scene("game", () => {
     /*level*/
     addLevel([
@@ -356,7 +356,7 @@ scene("game", () => {
 
         width: 15,
         height: 2,
-
+/* each symbol become a sprite on the map */
         "-": () => [
             sprite("floor_solid"),
             area(),
@@ -599,7 +599,7 @@ scene("game", () => {
             hp.text = "HP:" + hp.value
         }
 
-        if (barrel.pos.y >= fall) {
+        if (barrel.pos.y >= fall) { /* destroy barrel when in the void to avoid lag */
             destroy(barrel);
         }
     })
