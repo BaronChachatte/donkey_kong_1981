@@ -76,7 +76,6 @@ loadSound("death", "Sounds/death.wav");
 loadSound("hammer","Sounds/hammer.wav");
 loadSound("item","Sounds/itemget.wav");
 loadSound("jump","Sounds/jump.wav");
-loadSound("walk","Sounds/walking.wav");
 loadSound("win1","Sounds/win1.wav");
 loadSound("win2","Sounds/win2.wav")
 loadSound("hit","Sounds/oof.mp3")
@@ -94,7 +93,6 @@ var bgmusic= play("backmusic", { /*sound effect background music*/
 /*intro*/
 scene("intro", () => {
     imusic.play()
-    wmusic.pause()
     bgmusic.pause()
 
     onKeyPress("enter", () => {
