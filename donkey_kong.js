@@ -627,7 +627,7 @@ scene("game", () => {
     });
 
     /*score counter*/
-    let score = 2000;
+    let score = 1750;
 
     const scoreLabel = add([
         text("Score: "+score),
