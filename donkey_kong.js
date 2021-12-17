@@ -395,7 +395,6 @@ scene("game", () => {
     });
 
     imusic.pause()
-    wmusic.pause()
     bgmusic.play()
 
     gravity(250);
