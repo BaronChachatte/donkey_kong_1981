@@ -2,7 +2,7 @@ import kaboom from "https://unpkg.com/kaboom/dist/kaboom.mjs";
 
 /*context*/
 const fall = 500
-const speed = 1.7
+const speed = 1.6
 const climbing_speed = 0.1
 
 kaboom({
@@ -484,8 +484,7 @@ scene("game", () => {
     ])
 
     /*ladders*/
-
-    /* [first rung x, first rung y, number of rung] */
+    /*[first rung x, first rung y, number of rung]*/
     var arr_ladder = [
         [420, 401, 5],  /*rez-de-chaussee*/
 
@@ -504,7 +503,7 @@ scene("game", () => {
     ];
 
     /*ladder scale*/
-    var height_ladder = 21 * 0.35;
+    var height_ladder = 21 * 0.35;  /*change manually each time ladder rung scale change*/
 
     /*add ladders*/
     arr_ladder.forEach(function (each_ladder) {
@@ -539,13 +538,12 @@ scene("game", () => {
     })
 
     
-    /* floor appear/disappear when climbing */
+    /*floor appear/disappear when climbing*/
     onUpdate("top_ladder", (top_ladder) => {
         top_ladder.solid = top_ladder.pos.dist(mario.pos) >= 35
     })
 
     /*barrels*/
-
     /*spawn barrels*/
     function spawnBarrel() {
         add([
@@ -557,7 +555,7 @@ scene("game", () => {
             'barrel',
         ]);
 
-        wait(rand(3, 6), spawnBarrel);  /*spawn randomly between 3 to 6 seconds*/
+        wait(rand(2, 4), spawnBarrel);  /*spawn randomly between 2 to 4 seconds*/
     }
 
     spawnBarrel();
@@ -570,23 +568,23 @@ scene("game", () => {
         }
 
         else if (barrel.pos.y > 120 && barrel.pos.y < 145) {
-            barrel.move(-90, 0)
+            barrel.move(-135, 0)
         }
 
         else if (barrel.pos.y > 185 && barrel.pos.y < 210) {
-            barrel.move(90, 0)
+            barrel.move(135, 0)
         }
 
         else if (barrel.pos.y > 250 && barrel.pos.y < 275) {
-            barrel.move(-90, 0)
+            barrel.move(-135, 0)
         }
 
         else if (barrel.pos.y > 315 && barrel.pos.y < 340) {
-            barrel.move(90, 0)
+            barrel.move(135, 0)
         }
 
         else if (barrel.pos.y > 385) {
-            barrel.move(-90, 0)
+            barrel.move(-135, 0)
         }
 
         if (barrel.isTouching(mario)) {
@@ -606,39 +604,7 @@ scene("game", () => {
         }
     })
 
-
-    /*bruit de pas
-    // let timer = 0
-
-    // onKeyPress("left", () => {
-    // // reset on press
-    //     timer = 0
-    // })
-    // onKeyDown("left", () => {
-    //     timer += dt()
-    //     // fire every 1 second "left" is held down
-    // if (timer > 1) {
-    //     timer = 0
-    //     play("walk")
-    //     } 
-    // })
-    
-    // onKeyPress("right", () => {
-    //     timer = 0
-                
-    // })
-    // onKeyDown("right", () => {
-    //     timer += dt()
-
-    // if (timer > 1) {
-    //     timer = 0
-    //     play("walk")  
-    //     } 
-    // }) 
-
-
     /*lose conditions*/
-
     /*lose if mario is out of map*/
     mario.action(() => {
         if (mario.pos.y >= fall) {
@@ -669,39 +635,24 @@ scene("game", () => {
     });
 
     /*score counter*/
-    let score = 0;
+    let score = 2000;
 
     const scoreLabel = add([
-        text(0),
+        text("Score: "+score),
         pos(445, 35),
-        {value: 0},
         scale(0.25),
     ]);
 
-    // incrémentation du score lors d'un saut 
-    // onUpdate("barrel",(barrel) => {
-    //     if (barrel.pos.dist(mario.pos) <= 40 )
-    //     {
-    //         scoreLabel.value+=50;
-    //         scoreLabel.text = scoreLabel.value;
-    //         score+=50;
-    //     }
-    // })
-
-    const timer = add([
-        text("TIMER: 1500"),
-        pos(445, 0),
-        { value: 1500 },
-        scale(0.25),
-    ])
+    /*score refresh every frame*/
     onUpdate(() => {
-        timer.value--;
-        if (timer.value <= 0){
-            go("lose")
-        }
-        timer.text = "TIMER:" + timer.value
-    });
+        score--;
 
+        if (score <= 0){
+            go("lose", score)
+        }
+
+        scoreLabel.text = "Score: "+score;
+    });
 
     /*hp counter*/
     const hp = add([
@@ -784,4 +735,5 @@ scene("win", (score) => {
     onKeyPress("enter", () => go("intro"));
 })
 
+/*first scene*/
 go("intro")
