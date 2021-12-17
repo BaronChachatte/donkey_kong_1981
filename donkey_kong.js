@@ -81,10 +81,7 @@ loadSound("win1","Sounds/win1.wav");
 loadSound("win2","Sounds/win2.wav")
 loadSound("hit","Sounds/oof.mp3")
 
-var wmusic = play("walk", { /* sounds effect of walking */
-    volume:.3,
-    loop: false,
-})
+
 var imusic = play("intro", { /* sound effect of intro music */
     volume:.3,
     loop: true
@@ -93,8 +90,6 @@ var bgmusic= play("backmusic", { /* sound effect background music */
     volume: .3,
     loop: true
 })
-
-
 
 /*intro*/
 scene("intro", () => {
