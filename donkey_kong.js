@@ -81,11 +81,11 @@ loadSound("win1","Sounds/win1.wav");
 loadSound("win2","Sounds/win2.wav")
 loadSound("hit","Sounds/oof.mp3")
 
-
 var imusic = play("intro", { /* sound effect of intro music */
     volume:.3,
     loop: true
 })
+
 var bgmusic= play("backmusic", { /* sound effect background music */
     volume: .3,
     loop: true
