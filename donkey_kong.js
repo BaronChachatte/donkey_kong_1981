@@ -141,145 +141,6 @@ scene("intro", () => {
 
 /*game*/
 scene("game", () => {
-
-    imusic.pause()
-    wmusic.pause()
-    bgmusic.play()
-
-    gravity(250);
-
-    /* game layers */
-    layers([
-        "background",
-        "game",
-        "ui",
-    ], "game")
-
-    /* spawn mario */
-    const mario = add([
-        sprite("mario"),
-        pos(60, 379),
-        area(),
-        body(),
-        scale(0.32),
-        health(3),
-        layer("game"),
-    ])
-
-    /*mario jump*/
-    function jump() {
-        if (mario.isGrounded()) {
-            mario.jump(120);
-            play("jump", {
-                volume:0.2,
-            });
-        }
-    }
-
-    onKeyPress("space", jump);
-
-    // DK
-    const DK = add([
-        sprite("DK"),
-        pos(100, 22),
-        layer("game"),
-        scale(0.25),
-    ])
-
-    DK.play("beating")
-    
-    /*mario animations*/
-    mario.play("idle_right")
-    onUpdate(() => {
-        const curAnim = mario.curAnim()
-
-        if (isKeyDown("left")) {
-            if (curAnim !== "run_left") {
-                mario.play("run_left")
-            }
-            mario.pos.x -= speed
-        }
-
-        else if (isKeyDown("right")) {
-            if (curAnim !== "run_right") {
-                mario.play("run_right")
-            }
-            mario.pos.x += speed
-        }
-
-        else {
-            if (curAnim) {
-                var directionAnim = curAnim.split('_')[1];
-                mario.play('idle_' + directionAnim)
-            }
-        }
-    })
-
-    /*princess*/
-    const princess = add([
-        sprite("running_princess_right_2"),
-        pos(245, 5),
-        area(),
-        scale(0.35),
-        "princess"
-    ])
-
-    /*ladders*/
-
-    /* [first rung x, first rung y, number of rung] */
-    var arr_ladder = [
-        [420, 401, 5],  /*rez-de-chaussee*/
-
-        [135, 335, 5],  /*1st floor*/
-        [255, 343, 7],
-
-        [285, 277, 7],  /*2nd floor*/
-        [420, 269, 5],
-
-        [210, 207, 6],  /*3rd floor*/
-        [135, 203, 5],
-
-        [420, 137, 5],  /*4th floor*/
-
-        [315, 81, 5],  /*5th floor*/
-    ];
-
-    /*ladder scale*/
-    var height_ladder = 21 * 0.35;
-
-    /*add ladders*/
-    arr_ladder.forEach(function (each_ladder) {
-        for (var i = 0; i < each_ladder[2]; i++) {
-            add([
-                sprite("ladder"),
-                pos(each_ladder[0], each_ladder[1] - i * height_ladder),
-                area(),
-                scale(0.35),
-                'ladder',
-                layer("background"),
-            ])
-        }
-    })
-
-    var getLadders = get('ladder');
-
-    /*climb ladders*/
-    mario.onUpdate(() => {
-        getLadders.forEach(function (each_ladder) {
-            if (mario.isTouching(each_ladder)) {
-                if (isKeyDown("up")) {
-                    mario.pos.y -= climbing_speed;
-                    mario.jump(100);
-                }
-
-                else if (isKeyDown("down")) {
-                    mario.pos.y += climbing_speed;
-                }
-            }
-        })
-    })
-
-    
     /*level*/
     addLevel([
         "             $ $                      ",
@@ -539,6 +400,145 @@ scene("game", () => {
             layer("background"),
         ],
     });
+
+    imusic.pause()
+    wmusic.pause()
+    bgmusic.play()
+
+    gravity(250);
+
+    /* game layers */
+    layers([
+        "background",
+        "game",
+        "ui",
+    ], "game")
+
+    /* spawn mario */
+    const mario = add([
+        sprite("mario"),
+        pos(60, 379),
+        area(),
+        body(),
+        scale(0.32),
+        health(3),
+        layer("game"),
+    ])
+
+    /*mario jump*/
+    function jump() {
+        if (mario.isGrounded()) {
+            mario.jump(120);
+            play("jump", {
+                volume:0.2,
+            });
+        }
+    }
+
+    onKeyPress("space", jump);
+
+    // DK
+    const DK = add([
+        sprite("DK"),
+        pos(100, 22),
+        layer("game"),
+        scale(0.25),
+    ])
+
+    DK.play("beating")
+    
+    /*mario animations*/
+    mario.play("idle_right")
+    onUpdate(() => {
+        const curAnim = mario.curAnim()
+
+        if (isKeyDown("left")) {
+            if (curAnim !== "run_left") {
+                mario.play("run_left")
+            }
+            mario.pos.x -= speed
+        }
+
+        else if (isKeyDown("right")) {
+            if (curAnim !== "run_right") {
+                mario.play("run_right")
+            }
+            mario.pos.x += speed
+        }
+
+        else {
+            if (curAnim) {
+                var directionAnim = curAnim.split('_')[1];
+                mario.play('idle_' + directionAnim)
+            }
+        }
+    })
+
+    /*princess*/
+    const princess = add([
+        sprite("running_princess_right_2"),
+        pos(245, 5),
+        area(),
+        scale(0.35),
+        "princess"
+    ])
+
+    /*ladders*/
+
+    /* [first rung x, first rung y, number of rung] */
+    var arr_ladder = [
+        [420, 401, 5],  /*rez-de-chaussee*/
+
+        [135, 335, 5],  /*1st floor*/
+        [255, 343, 7],
+
+        [285, 277, 7],  /*2nd floor*/
+        [420, 269, 5],
+
+        [210, 207, 6],  /*3rd floor*/
+        [135, 203, 5],
+
+        [420, 137, 5],  /*4th floor*/
+
+        [315, 81, 5],  /*5th floor*/
+    ];
+
+    /*ladder scale*/
+    var height_ladder = 21 * 0.35;
+
+    /*add ladders*/
+    arr_ladder.forEach(function (each_ladder) {
+        for (var i = 0; i < each_ladder[2]; i++) {
+            add([
+                sprite("ladder"),
+                pos(each_ladder[0], each_ladder[1] - i * height_ladder),
+                area(),
+                scale(0.35),
+                'ladder',
+                layer("background"),
+            ])
+        }
+    })
+
+    var getLadders = get('ladder');
+
+    /*climb ladders*/
+    mario.onUpdate(() => {
+        getLadders.forEach(function (each_ladder) {
+            if (mario.isTouching(each_ladder)) {
+                if (isKeyDown("up")) {
+                    mario.pos.y -= climbing_speed;
+                    mario.jump(100);
+                }
+
+                else if (isKeyDown("down")) {
+                    mario.pos.y += climbing_speed;
+                }
+            }
+        })
+    })
+
+    
     /* floor appear/disappear when climbing */
     onUpdate("top_ladder", (top_ladder) => {
         top_ladder.solid = top_ladder.pos.dist(mario.pos) >= 35
